@@ -1,6 +1,6 @@
 package com.sparta.customerproductsystem.domain.entity;
 
-import com.sparta.customerproductsystem.domain.UserRole;
+import com.sparta.customerproductsystem.domain.role.UserRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
