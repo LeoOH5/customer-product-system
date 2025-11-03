@@ -3,6 +3,8 @@ package com.sparta.customerproductsystem.service;
 import com.sparta.customerproductsystem.domain.entity.Users;
 import com.sparta.customerproductsystem.dto.GetUserDetailResponse;
 import com.sparta.customerproductsystem.dto.GetUserListResponse;
+import com.sparta.customerproductsystem.dto.PatchUserUpdateRequest;
+import com.sparta.customerproductsystem.dto.PatchUserUpdateResponse;
 import com.sparta.customerproductsystem.dto.mapper.UserMapper;
 import com.sparta.customerproductsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +36,13 @@ public class UserService {
         Users user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         return UserMapper.userDetail(user);
+    }
+
+    // 유저 정보 수정
+    @Transactional
+    public PatchUserUpdateResponse updateUser(Long id, PatchUserUpdateRequest request) {
+        Users user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return UserMapper.userUpdate(user);
     }
 }
