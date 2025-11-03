@@ -14,4 +14,16 @@ public class UserMapper {
                 users.getCreatedAt()
         );
     }
+
+    // 유저 상세정보 조회
+    public static GetUserDetailResponse userDetail(Users users) {
+        return new GetUserDetailResponse(
+                users.getId(),
+                users.getEmail(),
+                users.getName(),
+                users.getRole(),
+                users.getCreatedAt(),
+                users.getUpdatedAt()
+        );
+    }
 }
