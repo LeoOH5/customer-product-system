@@ -29,4 +29,11 @@ public class Order extends BaseTimeEntity{
 
     private String status;
 
+    public Order(Users user, Product product, int quantity, int amount, String status) {
+        this.user = user;
+        this.product = product;
+        this.quantity = quantity;
+        this.amount = amount;
+        this.status = status;
+    }
 }
