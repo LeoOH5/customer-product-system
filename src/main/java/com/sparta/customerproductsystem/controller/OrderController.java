@@ -1,9 +1,10 @@
 package com.sparta.customerproductsystem.controller;
 
 import com.sparta.customerproductsystem.domain.entity.Users;
+import com.sparta.customerproductsystem.dto.orderdto.CreateOrderResponse;
 import com.sparta.customerproductsystem.dto.orderdto.DeleteOrderResponse;
-import com.sparta.customerproductsystem.dto.orderdto.OrderRequest;
-import com.sparta.customerproductsystem.dto.orderdto.OrderResponse;
+import com.sparta.customerproductsystem.dto.orderdto.CreateOrderRequest;
+import com.sparta.customerproductsystem.dto.orderdto.GetOrderResponse;
 import com.sparta.customerproductsystem.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,20 +18,20 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/orders")
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest request,
-                                                     @AuthenticationPrincipal Users user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.save(request, user));
+    public ResponseEntity<CreateOrderResponse> createOrder(@RequestBody CreateOrderRequest request/*,
+                                                                         @AuthenticationPrincipal Users user*/) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.save(request/*, user*/));
     }
 
     @GetMapping("/orders/{orderId}")
-    public ResponseEntity<OrderResponse> getDetailOrders(@PathVariable Long orderId,
-                                                               @AuthenticationPrincipal Users user) {
-        return ResponseEntity.status(HttpStatus.OK).body(orderService.getOne(orderId, user));
+    public ResponseEntity<GetOrderResponse> getDetailOrders(@PathVariable Long orderId/*,
+                                                            @AuthenticationPrincipal Users user*/) {
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getOne(orderId/*, user*/));
     }
 
     @DeleteMapping("/orders/{orderId}")
-    public ResponseEntity<DeleteOrderResponse> deleteOrder(@PathVariable Long orderId,
-                                                           @AuthenticationPrincipal Users user) {
-        return ResponseEntity.status(HttpStatus.OK).body(orderService.delete(orderId, user));
+    public ResponseEntity<DeleteOrderResponse> deleteOrder(@PathVariable Long orderId/*,
+                                                           @AuthenticationPrincipal Users user*/) {
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.delete(orderId/*, user*/));
     }
 }
