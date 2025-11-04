@@ -5,6 +5,7 @@ import com.sparta.customerproductsystem.domain.role.UserRole;
 import com.sparta.customerproductsystem.dto.*;
 import com.sparta.customerproductsystem.utils.JwtUtils;
 import com.sparta.customerproductsystem.repository.UsersDetailRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -60,5 +61,19 @@ public class AuthService {
         usersDetailRepository.save(user);
 
         return new AdminCreateUserResponse(user);
+    }
+
+    public RefreshResponse refresh(RefreshRequest refreshRequest) {
+        String refreshToken = refreshRequest.getRefreshToken();
+
+        Long id = jwtUtils.getUserId(refreshToken);
+        String email = jwtUtils.getEmail(refreshToken);
+        String name = jwtUtils.getName(refreshToken);
+        String role = jwtUtils.getRole(refreshToken);
+
+        String accessToken = jwtUtils.generateAccessToken(id, email, name, role);
+        String refreshTokenToken = jwtUtils.generateRefreshToken(id, email,name, role);
+
+        return new RefreshResponse(accessToken, refreshTokenToken);
     }
 }

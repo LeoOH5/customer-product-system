@@ -16,7 +16,7 @@ public class AuthController {
     private final AuthService authService;
 
     //유저 회원가입
-    @PostMapping("/user/register")
+    @PostMapping("/user/auth/register")
     public SignUpResponse signup(@Valid @RequestBody SignUpRequest signUpRequest) {
         SignUpResponse result = authService.saveUsers(signUpRequest);
         return result;
@@ -27,6 +27,12 @@ public class AuthController {
     public LoginResponse login(@Valid @RequestBody LoginRequest loginRequest) {
         return authService.login(loginRequest);
 
+    }
+
+    //토큰 재발급
+    @PostMapping("/user/auth/refresh")
+    public RefreshResponse refresh(@Valid @RequestBody RefreshRequest refreshRequest) {
+        return authService.refresh(refreshRequest);
     }
 
     //관리자권한 회원 추가
