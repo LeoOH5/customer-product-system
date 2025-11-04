@@ -1,5 +1,6 @@
 package com.sparta.customerproductsystem.dto;
 
+import com.sparta.customerproductsystem.domain.entity.Users;
 import com.sparta.customerproductsystem.domain.role.UserRole;
 import lombok.Getter;
 
@@ -19,5 +20,14 @@ public class GetUserListResponse { // 유저 리스트 조회
         this.name = name;
         this.role = role;
         this.createdAt = createdAt;
+    }
+    public static GetUserListResponse from(Users users) {
+        return new GetUserListResponse(
+                users.getId(),
+                users.getEmail(),
+                users.getName(),
+                users.getRole(),
+                users.getCreatedAt()
+        );
     }
 }

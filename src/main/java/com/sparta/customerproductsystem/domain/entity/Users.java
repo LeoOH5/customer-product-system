@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -25,9 +26,11 @@ public class Users extends BaseTimeEntity {
     @Size(min = 8, message = "비밀번호는 최소 8자 이상, 영문,숫자,특수문자 조합을 권장합니다.")
     @Column(nullable = false)
     private String password;
+    @Setter
     @Column(nullable = false)
     private String name;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.CUSTOMER;
 

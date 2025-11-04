@@ -1,5 +1,6 @@
 package com.sparta.customerproductsystem.dto;
 
+import com.sparta.customerproductsystem.domain.entity.Users;
 import com.sparta.customerproductsystem.domain.role.UserRole;
 import lombok.Getter;
 
@@ -19,5 +20,15 @@ public class PatchUserUpdateResponse {
         this.name = name;
         this.role = role;
         this.updatedAt = updatedAt;
+    }
+
+    public static PatchUserUpdateResponse from(Users users) {
+        return new PatchUserUpdateResponse(
+                users.getId(),
+                users.getEmail(),
+                users.getName(),
+                users.getRole(),
+                users.getUpdatedAt()
+        );
     }
 }
