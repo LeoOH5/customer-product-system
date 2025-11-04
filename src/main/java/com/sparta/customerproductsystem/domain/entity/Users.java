@@ -23,19 +23,21 @@ public class Users extends BaseTimeEntity {
     private String password;
     @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
+    private String phone;
 
-    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     @OneToMany(mappedBy = "user")
     private List<Review> reviews;
 
-    public Users(String email, String password, String name, UserRole role) {
+    public Users(String email, String password, String name, String phone) {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.role = role;
+        this.phone = phone;
     }
+
 }
 
 
