@@ -37,8 +37,7 @@ public class Users extends BaseTimeEntity {
     @OneToMany(mappedBy = "user")
     private List<Review> reviews;
 
-    public Users(Long id, String email, String password, String name, UserRole role) {
-        this.id = id;
+    public Users(String email, String password, String name, UserRole role) {
         this.email = email;
         this.password = password;
         this.name = name;
