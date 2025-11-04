@@ -29,12 +29,5 @@ public class Product extends BaseTimeEntity{
     @Column(nullable = false)
     private String category;
 
-    public Product(String name, String description, int price, int stock) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.stock = stock;
-    }
-
 
 }
