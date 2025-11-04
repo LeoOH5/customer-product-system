@@ -1,5 +1,6 @@
 package com.sparta.customerproductsystem.dto;
 
+import com.sparta.customerproductsystem.domain.entity.Users;
 import com.sparta.customerproductsystem.domain.role.UserRole;
 import lombok.Getter;
 
@@ -21,5 +22,16 @@ public class GetUserDetailResponse {
         this.role = role;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public static GetUserDetailResponse from(Users users) {
+        return new GetUserDetailResponse(
+                users.getId(),
+                users.getEmail(),
+                users.getName(),
+                users.getRole(),
+                users.getCreatedAt(),
+                users.getUpdatedAt()
+        );
     }
 }

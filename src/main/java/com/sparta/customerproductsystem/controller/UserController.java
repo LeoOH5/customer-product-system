@@ -2,6 +2,8 @@ package com.sparta.customerproductsystem.controller;
 
 import com.sparta.customerproductsystem.dto.GetUserDetailResponse;
 import com.sparta.customerproductsystem.dto.GetUserListResponse;
+import com.sparta.customerproductsystem.dto.PatchUserUpdateRequest;
+import com.sparta.customerproductsystem.dto.PatchUserUpdateResponse;
 import com.sparta.customerproductsystem.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,5 +31,11 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<GetUserDetailResponse> getUserDetail(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(userService.findUserById(id));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<PatchUserUpdateResponse> patchUserUpdate(
+            @PathVariable Long id, @RequestBody PatchUserUpdateRequest updateRequest){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(id, updateRequest));
     }
 }
