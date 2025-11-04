@@ -3,6 +3,7 @@ package com.sparta.customerproductsystem.controller;
 import com.sparta.customerproductsystem.dto.*;
 import com.sparta.customerproductsystem.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,12 +18,23 @@ public class UserController {
     private final UserService userService;
 
     // 유저 리스트 조회
-    @GetMapping
+    // params는 Mapping 조건을 지정하는 개념
+    @GetMapping(params = {"!page", "!size"})
     public ResponseEntity<List<GetUserListResponse>> getUserList(
             @RequestParam(required = false) String keyword
     ) {
         List<GetUserListResponse> body = userService.userList(keyword);
-        return ResponseEntity.ok(body);
+        return ResponseEntity.status(HttpStatus.OK).body(body);
+    }
+
+    // 유저 리스트 페이징 조회
+    @GetMapping(params = {"page", "size"})
+    public ResponseEntity<GetUserPageResponse> getUserListPage(
+            @RequestParam(required = false) String keyword,
+            Pageable pageable
+    ) {
+        GetUserPageResponse body = userService.getUserListPage(keyword, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
     // 유저 상세 정보 조회
