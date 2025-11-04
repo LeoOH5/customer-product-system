@@ -30,7 +30,7 @@ public class OrderService {
         Product product = productRepository.findByName(name).orElseThrow(
                 () -> new IllegalStateException("올바른 상품명을 입력해주세요."));
         //주문 가능 여부 check (재고 부족)
-        if (request.getQuantity() > product.getStock()) {
+        if (request.getQuantity() > product.getStockQuantity()) {
             throw new IllegalStateException("재고가 부족합니다. 구매 수량을 수정해주세요.");
         }
         int amount = product.getPrice() * request.getQuantity();
