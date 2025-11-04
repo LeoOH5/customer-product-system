@@ -1,10 +1,7 @@
 package com.sparta.customerproductsystem.service;
 
 import com.sparta.customerproductsystem.domain.entity.Users;
-import com.sparta.customerproductsystem.dto.GetUserDetailResponse;
-import com.sparta.customerproductsystem.dto.GetUserListResponse;
-import com.sparta.customerproductsystem.dto.PatchUserUpdateRequest;
-import com.sparta.customerproductsystem.dto.PatchUserUpdateResponse;
+import com.sparta.customerproductsystem.dto.*;
 import com.sparta.customerproductsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,7 +36,7 @@ public class UserService {
         return GetUserDetailResponse.from(user);
     }
 
-    // 유저 정보 수정
+    // 유저 정보 수정 (일반유저)
     @Transactional
     public PatchUserUpdateResponse updateUser(Long id, PatchUserUpdateRequest request) {
         Users user = userRepository.findById(id)
@@ -48,9 +45,29 @@ public class UserService {
         if (request.getName() != null && !request.getName().isBlank()) {
             user.setName(request.getName());
         }
-        if (request.getRole() != null) {
-            user.setRole(request.getRole());
+        if (request.getEmail() != null && !request.getEmail().isBlank()) {
+            user.setEmail(request.getEmail());
         }
+
         return PatchUserUpdateResponse.from(user);
+    }
+
+    // 유저 정보 수정 (관리자)
+    @Transactional
+    public PatchUserUpdateByAdminResponse updateUserByAdmin (Long id, PatchUserUpdateByAdminRequest updateRequest) {
+        Users user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (updateRequest.getName() != null && !updateRequest.getName().isBlank()) {
+            user.setName(updateRequest.getName());
+        }
+        if (updateRequest.getEmail() != null && !updateRequest.getEmail().isBlank()) {
+            user.setEmail(updateRequest.getEmail());
+        }
+        if (updateRequest.getRole() != null) {
+            user.setRole(updateRequest.getRole());
+        }
+
+        return PatchUserUpdateByAdminResponse.from(user);
     }
 }
