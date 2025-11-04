@@ -109,6 +109,18 @@ public class ProductService {
                 .message("상품 정보가 수정되었습니다.")
                 .warning(null)
                 .build();
-        
+
     }
+
+    // Product 검색
+    @Transactional(readOnly = true)
+    public List<GetProductSearchResponse> searchProducts(String keyword) {
+        List<Product> products = productRepository
+                .findByNameContainingIgnoreCaseOrCategoryContainingIgnoreCase(keyword, keyword);
+
+        return products.stream()
+                .map(GetProductSearchResponse::from)
+                .toList();
+    }
+
 }
