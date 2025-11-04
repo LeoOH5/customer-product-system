@@ -30,8 +30,7 @@ public class OrderService {
         Users user = userRepository.findById(1L).orElseThrow(
                 () -> new IllegalStateException("사용자를 찾을 수 없습니다."));
 
-        Order order = new Order(user, product, request.getQuantity(), amount);
-        order.setStatus(OrderRole.OK);
+        Order order = new Order(user, product, request.getQuantity(), amount, OrderRole.OK);
         Order savedOrder = orderRepository.save(order);
 
         return CreateOrderResponse.from(savedOrder);
@@ -68,9 +67,8 @@ public class OrderService {
         if (!user.getId().equals(order.getUser().getId())) {
             throw new IllegalArgumentException("삭제 권한이 없습니다.");
         }
-        Long id = order.getId();
-        orderRepository.delete(order);
-        return new DeleteOrderResponse(id, OrderRole.CANCEL);
+        order.delete(order.getStatus());
+        return new DeleteOrderResponse(order.getId(), order.getStatus());
     }
 
     @Transactional
