@@ -3,7 +3,8 @@ package com.sparta.customerproductsystem.repository;
 import com.sparta.customerproductsystem.domain.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    // 존재 여부만 확인 쿼리 최소화
-    boolean existsByName(String name);
+    Optional<Product> findByName(String name);
 }
