@@ -7,10 +7,10 @@ import java.time.LocalDateTime;
 
 @Getter
 public class SignUpResponse {
-    private Long id;
-    private String email;
-    private String name;
-    private LocalDateTime createAt;
+    private final Long id;
+    private final String email;
+    private final String name;
+    private final LocalDateTime createAt;
 
     public SignUpResponse(Users user) {
         this.id = user.getId();

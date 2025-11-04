@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public class LoginResponse {
-    private String accessToken;
-    private String refreshToken;
+    private final String accessToken;
+    private final String refreshToken;
 
     public LoginResponse(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
