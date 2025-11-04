@@ -33,6 +33,18 @@ public class Product extends BaseTimeEntity{
 
     private String imageUrl;
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
+
     @Builder
     private Product(String name, String description, int price,
                     int stockQuantity, String category, String imageUrl) {
