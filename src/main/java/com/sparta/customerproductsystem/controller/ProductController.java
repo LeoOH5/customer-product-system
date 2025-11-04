@@ -1,6 +1,6 @@
 package com.sparta.customerproductsystem.controller;
 
-import com.sparta.customerproductsystem.dto.product.GetProductListResponse;
+import com.sparta.customerproductsystem.dto.product.GetProductPageResponse;
 import com.sparta.customerproductsystem.dto.product.PostProductRequest;
 import com.sparta.customerproductsystem.dto.product.PostProductResponse;
 import com.sparta.customerproductsystem.service.ProductService;
@@ -26,7 +26,10 @@ public class ProductController {
 
     // Product 조회
     @GetMapping
-    public ResponseEntity<GetProductListResponse> list() {
-        return ResponseEntity.ok(productService.getProduct());
+    public ResponseEntity<GetProductPageResponse> getProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        return ResponseEntity.ok(productService.getProduct(page, size));
     }
 }

@@ -1,13 +1,16 @@
 package com.sparta.customerproductsystem.service;
 
 import com.sparta.customerproductsystem.domain.entity.Product;
-import com.sparta.customerproductsystem.dto.product.GetProductListResponse;
+import com.sparta.customerproductsystem.dto.product.GetProductPageResponse;
 import com.sparta.customerproductsystem.dto.product.GetProductResponse;
 import com.sparta.customerproductsystem.dto.product.PostProductRequest;
 import com.sparta.customerproductsystem.dto.product.PostProductResponse;
 import com.sparta.customerproductsystem.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,16 +52,24 @@ public class ProductService {
 
     // Product 조회
     @Transactional(readOnly = true)
-    public GetProductListResponse getProduct() {
-        List<Product> list = productRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+    public GetProductPageResponse getProduct(int page, int size) {
 
-        List<GetProductResponse> content = new ArrayList<>(list.size());
+        page = Math.max(page, 0);
+        // 1~100 사이로 제한
+        size = Math.min(Math.max(size, 1), 100);
 
-        for (Product p : list) {
-            GetProductResponse item = GetProductResponse.from(p, lowStockThreshold);
-            content.add(item);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+
+        Page<Product> pageData = productRepository.findAll(pageable);
+
+        List<GetProductResponse> content = new ArrayList<>(pageData.getNumberOfElements());
+        for (Product p : pageData.getContent()) {
+            content.add(GetProductResponse.from(p, lowStockThreshold));
         }
 
-        return new GetProductListResponse(content);
+        return GetProductPageResponse.of(content, pageData);
     }
+
+
 }
