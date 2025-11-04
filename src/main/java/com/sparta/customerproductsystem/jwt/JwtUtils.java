@@ -1,5 +1,9 @@
 package com.sparta.customerproductsystem.jwt;
 
+import com.sparta.customerproductsystem.jwt.dto.UserInfo;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,5 +48,37 @@ public class JwtUtils {
                 .setExpiration(expiryDate)
                 .signWith(secretKey)
                 .compact();
+    }
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (ExpiredJwtException e) {
+            System.out.println("토큰이 만료되었습니다.");
+        } catch (JwtException | IllegalArgumentException e) {
+            System.out.println("유효하지 않은 토큰입니다.");
+        }
+        return false;
+
+    }
+
+
+    public UserInfo getUserInfo(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return new UserInfo(
+                claims.get("id", Long.class),
+                claims.get("email", String.class),
+                claims.get("name", String.class),
+                claims.get("role", String.class)
+        );
+
     }
 }

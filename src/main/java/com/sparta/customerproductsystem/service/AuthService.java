@@ -2,6 +2,8 @@ package com.sparta.customerproductsystem.service;
 
 import com.sparta.customerproductsystem.domain.entity.Users;
 import com.sparta.customerproductsystem.domain.role.UserRole;
+import com.sparta.customerproductsystem.dto.LoginRequest;
+import com.sparta.customerproductsystem.dto.LoginResponse;
 import com.sparta.customerproductsystem.dto.SignUpRequest;
 import com.sparta.customerproductsystem.dto.SignUpResponse;
 import com.sparta.customerproductsystem.jwt.JwtUtils;
@@ -35,7 +37,7 @@ public class AuthService {
         Users users = usersDetailRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다"));
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), users.getPassword())) { //앞 : 입력받은 이메일, 뒤 : 인코딩된 비밀번호
+        if (!passwordEncoder.matches(loginRequest.getPassword(), users.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 잘못되었습니다");
         }
 
