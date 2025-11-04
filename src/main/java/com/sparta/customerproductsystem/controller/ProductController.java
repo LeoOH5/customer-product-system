@@ -1,8 +1,6 @@
 package com.sparta.customerproductsystem.controller;
 
-import com.sparta.customerproductsystem.dto.product.GetProductPageResponse;
-import com.sparta.customerproductsystem.dto.product.PostProductRequest;
-import com.sparta.customerproductsystem.dto.product.PostProductResponse;
+import com.sparta.customerproductsystem.dto.productdto.*;
 import com.sparta.customerproductsystem.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +29,11 @@ public class ProductController {
             @RequestParam(defaultValue = "10") int size
     ){
         return ResponseEntity.ok(productService.getProduct(page, size));
+    }
+
+    // Product 상세 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<GetProductDetailResponse> getProduct(@PathVariable Long id){
+        return ResponseEntity.ok(productService.getProductDetail(id));
     }
 }

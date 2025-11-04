@@ -1,10 +1,7 @@
 package com.sparta.customerproductsystem.service;
 
 import com.sparta.customerproductsystem.domain.entity.Product;
-import com.sparta.customerproductsystem.dto.product.GetProductPageResponse;
-import com.sparta.customerproductsystem.dto.product.GetProductResponse;
-import com.sparta.customerproductsystem.dto.product.PostProductRequest;
-import com.sparta.customerproductsystem.dto.product.PostProductResponse;
+import com.sparta.customerproductsystem.dto.productdto.*;
 import com.sparta.customerproductsystem.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,5 +68,11 @@ public class ProductService {
         return GetProductPageResponse.of(content, pageData);
     }
 
-
+    // Product 상세 조회
+    @Transactional(readOnly = true)
+    public GetProductDetailResponse getProductDetail(Long id) {
+        var product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("상품을 찾을 수 없습니다."));
+        return GetProductDetailResponse.from(product, lowStockThreshold);
+    }
 }
