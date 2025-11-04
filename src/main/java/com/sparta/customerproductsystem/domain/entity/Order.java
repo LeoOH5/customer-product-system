@@ -19,6 +19,7 @@ public class Order extends BaseTimeEntity{
 
     private int amount;
 
+    @Enumerated(EnumType.STRING)
     private OrderRole status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -29,15 +30,20 @@ public class Order extends BaseTimeEntity{
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    public Order(Users user, Product product, int quantity, int amount) {
+    public Order(Users user, Product product, int quantity, int amount, OrderRole status) {
         this.user = user;
         this.product = product;
         this.quantity = quantity;
         this.amount = amount;
+        this.status = status;
     }
 
-    public void setStatus(OrderRole status) {
-        this.status = status;
+    public void delete(OrderRole role) {
+        if(role.equals(OrderRole.OK)) {
+            this.quantity = 0;
+            this.amount = 0;
+            this.status = OrderRole.CANCEL;
+        }
     }
 
     public void update(int quantity, int amount, Product product) {
