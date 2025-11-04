@@ -39,4 +39,10 @@ public class Order extends BaseTimeEntity{
     public void setStatus(OrderRole status) {
         this.status = status;
     }
+
+    public void update(int quantity, int amount, Product product) {
+        this.quantity = quantity;
+        this.amount = amount;
+        this.product = product;
+    }
 }
