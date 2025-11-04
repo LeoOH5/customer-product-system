@@ -113,7 +113,7 @@ public class OrderService {
 
     public boolean checkProductStock(int quantity, Product product) {
         //주문 가능 여부 check (재고 부족)
-        if (quantity > product.getStock()) {
+        if (quantity > product.getStockQuantity()) {
             throw new IllegalStateException("재고가 부족합니다. 구매 수량을 수정해주세요.");
         }
         return true;
