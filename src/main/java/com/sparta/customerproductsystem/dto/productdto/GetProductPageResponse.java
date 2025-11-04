@@ -1,4 +1,4 @@
-package com.sparta.customerproductsystem.dto.product;
+package com.sparta.customerproductsystem.dto.productdto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

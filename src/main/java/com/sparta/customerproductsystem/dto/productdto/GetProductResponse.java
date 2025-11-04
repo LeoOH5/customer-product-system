@@ -1,4 +1,4 @@
-package com.sparta.customerproductsystem.dto.product;
+package com.sparta.customerproductsystem.dto.productdto;
 
 import com.sparta.customerproductsystem.domain.entity.Product;
 import lombok.Builder;

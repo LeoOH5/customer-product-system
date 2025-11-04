@@ -1,8 +1,7 @@
-package com.sparta.customerproductsystem.dto.product;
+package com.sparta.customerproductsystem.dto.productdto;
 
 import com.sparta.customerproductsystem.domain.entity.Product;
 import com.sparta.customerproductsystem.domain.role.ProductRole;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
