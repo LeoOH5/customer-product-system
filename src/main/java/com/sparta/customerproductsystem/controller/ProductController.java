@@ -36,4 +36,13 @@ public class ProductController {
     public ResponseEntity<GetProductDetailResponse> getProduct(@PathVariable Long id){
         return ResponseEntity.ok(productService.getProductDetail(id));
     }
+
+    // Product 수정
+    @PatchMapping("/{id}")
+    public ResponseEntity<PatchProductResponse> updateProduct(
+            @PathVariable Long id,
+            @RequestBody PatchProductRequest request
+    ) {
+        return ResponseEntity.ok(productService.patchProduct(id, request));
+    }
 }
