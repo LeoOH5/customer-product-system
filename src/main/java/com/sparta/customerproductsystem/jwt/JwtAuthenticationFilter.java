@@ -8,12 +8,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -47,8 +50,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         UserInfo userInfo = jwtUtils.getUserInfo(token);
 
+        // 사용자의 권한 목록을 담을 컬렉션 사용
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        // JWT에서 꺼낸 사용자 role을 Spring Security 권한 규칙에 맞게 등록
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + userInfo.getRole()));
+
         Authentication auth =
-                new UsernamePasswordAuthenticationToken(userInfo, null, Collections.emptyList());
+                // 기존 emptyList 반환 -> 비어있는 사용자로 등록된 부분을 실제 권한을 담아 반영한 사용자로 반환
+                new UsernamePasswordAuthenticationToken(userInfo, null, authorities);
 
         SecurityContextHolder.getContext().setAuthentication(auth);
         filterChain.doFilter(request, response);
