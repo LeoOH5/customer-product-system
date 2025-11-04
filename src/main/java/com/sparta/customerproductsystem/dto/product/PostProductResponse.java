@@ -16,33 +16,29 @@ public class PostProductResponse {
 
     private Long id;
     private String name;
-    private String description;
     private int price;
     private int stockQuantity;
     private String category;
     private ProductRole status;
     private String imageUrl;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
     private String message;
     private String warning;
 
     @Builder
     // 매개변수 순서 상관없이 사용 가능, 비어있는 건 null로 유연하게 처리
-    private PostProductResponse(Long id, String name, String description, int price,
+    private PostProductResponse(Long id, String name, int price,
                                 int stockQuantity, String category, ProductRole status,
-                                String imageUrl, LocalDateTime createdAt, LocalDateTime updatedAt,
+                                String imageUrl, LocalDateTime createdAt,
                                 String message, String warning) {
         this.id = id;
         this.name = name;
-        this.description = description;
         this.price = price;
         this.stockQuantity = stockQuantity;
         this.category = category;
         this.status = status;
         this.imageUrl = imageUrl;
         this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.message = message;
         this.warning = warning;
     }
@@ -52,14 +48,12 @@ public class PostProductResponse {
         return PostProductResponse.builder()
                 .id(p.getId())
                 .name(p.getName())
-                .description(p.getDescription())
                 .price(p.getPrice())
                 .stockQuantity(p.getStockQuantity())
                 .category(p.getCategory())
                 .status(p.inferStatus())
                 .imageUrl(p.getImageUrl())
                 .createdAt(p.getCreatedAt())
-                .updatedAt(p.getUpdatedAt())
                 .message(message)
                 .warning(warning)
                 .build();
