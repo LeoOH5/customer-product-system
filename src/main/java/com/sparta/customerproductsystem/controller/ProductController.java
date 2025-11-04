@@ -1,6 +1,6 @@
 package com.sparta.customerproductsystem.controller;
 
-import com.sparta.customerproductsystem.domain.entity.Product;
+import com.sparta.customerproductsystem.dto.product.GetProductListResponse;
 import com.sparta.customerproductsystem.dto.product.PostProductRequest;
 import com.sparta.customerproductsystem.dto.product.PostProductResponse;
 import com.sparta.customerproductsystem.service.ProductService;
@@ -8,10 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,4 +24,9 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(postProductResponse);
     }
 
+    // Product 조회
+    @GetMapping
+    public ResponseEntity<GetProductListResponse> list() {
+        return ResponseEntity.ok(productService.getProduct());
+    }
 }
