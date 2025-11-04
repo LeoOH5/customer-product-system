@@ -4,6 +4,7 @@ import com.sparta.customerproductsystem.domain.entity.Order;
 import com.sparta.customerproductsystem.domain.entity.Product;
 import com.sparta.customerproductsystem.domain.entity.Users;
 import com.sparta.customerproductsystem.domain.role.OrderRole;
+import com.sparta.customerproductsystem.domain.role.UserRole;
 import com.sparta.customerproductsystem.dto.orderdto.*;
 import com.sparta.customerproductsystem.repository.OrderRepository;
 import com.sparta.customerproductsystem.repository.ProductRepository;
@@ -20,15 +21,16 @@ public class OrderService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CreateOrderResponse save(CreateOrderRequest request/*, Users user*/) {
+    public CreateOrderResponse save(CreateOrderRequest request, Users user) {
         // 상품명 존재 여부 check
         Product product = findProductByName(request.getName());
         //주문 가능 여부 check (재고 부족)
-        if(!checkProductStock(request.getQuantity(), product)) {}
+        try {
+            checkProductStock(request.getQuantity(), product);
+        } catch (IllegalStateException e) {
+            // 어떻게 반환할까? 메시지?
+        }
         int amount = product.getPrice() * request.getQuantity();
-        //테스트용 User
-        Users user = userRepository.findById(1L).orElseThrow(
-                () -> new IllegalStateException("사용자를 찾을 수 없습니다."));
 
         Order order = new Order(user, product, request.getQuantity(), amount, OrderRole.OK);
         Order savedOrder = orderRepository.save(order);
@@ -38,61 +40,59 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public GetOrderResponse getOne(Long orderId/*, Users user*/) {
+    public GetOrderResponse getOne(Long orderId, Users user) {
         Order order = findOrderById(orderId);
-        //테스트용 User
-        Users user = userRepository.findById(1L).orElseThrow(
-                () -> new IllegalStateException("사용자를 찾을 수 없습니다."));
 
         // 관리자 조회 시 전체 사용자의 Order 조회 가능
-//        if(user.getRole().equals(UserRole.ADMIN)) {
-//            return GetOrderResponse.from(order);
-//        }
+        if(user.getRole().equals(UserRole.ADMIN)) {
+            return GetOrderResponse.from(order);
+        }
         // 사용자 조회 시 해당 사용자 Order 건만 조회 가능
         // 사용자 일치하는지 check
-        if (!user.getId().equals(order.getUser().getId())) {
-            throw new IllegalArgumentException("해당 요청은 관리자만 수행할 수 있습니다.");
+        try {
+            checkUserId(order, user);
+        } catch (IllegalArgumentException e) {
+
         }
         return GetOrderResponse.from(order);
     }
 
     @Transactional
-    public DeleteOrderResponse delete(Long orderId/*, Users user*/) {
+    public DeleteOrderResponse delete(Long orderId, Users user) {
         Order order = findOrderById(orderId);
-        //테스트용 User
-        Users user = userRepository.findById(1L).orElseThrow(
-                () -> new IllegalStateException("사용자를 찾을 수 없습니다."));
 
         // 삭제를 요청한 사용자가 Order user_id와 같은지 check
-        if (!user.getId().equals(order.getUser().getId())) {
-            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        try {
+            checkUserId(order, user);
+        } catch (IllegalArgumentException e) {
+
         }
         order.delete(order.getStatus());
         return new DeleteOrderResponse(order.getId(), order.getStatus());
     }
 
     @Transactional
-    public GetOrderResponse update(Long orderId, CreateOrderRequest request/*, Users user*/) {
+    public GetOrderResponse update(Long orderId, CreateOrderRequest request, Users user) {
         Order order = findOrderById(orderId);
         Product product = findProductByName(request.getName());
         // 수정할 상품 재고 check
-        if(!checkProductStock(request.getQuantity(), product)) {
-            // 예외 처리
+        try {
+            checkProductStock(request.getQuantity(), product);
+        } catch (IllegalStateException e) {
+            // 어떻게 반환할까? 메시지?
         }
         int amount = product.getPrice() * request.getQuantity();
 
-        //테스트용 User
-        Users user = userRepository.findById(1L).orElseThrow(
-                () -> new IllegalStateException("사용자를 찾을 수 없습니다."));
-
         // 관리자 조회 시 전체 사용자의 Order 조회 가능
-//        if(user.getRole().equals(UserRole.ADMIN)) {
-//            return GetOrderResponse.from(order);
-//        }
+        if(user.getRole().equals(UserRole.ADMIN)) {
+            return GetOrderResponse.from(order);
+        }
         // 사용자 조회 시 해당 사용자 Order 건만 조회 가능
         // 사용자 일치하는지 check
-        if (!user.getId().equals(order.getUser().getId())) {
-            throw new IllegalArgumentException("해당 요청은 관리자만 수행할 수 있습니다.");
+        try {
+            checkUserId(order, user);
+        } catch (IllegalArgumentException e) {
+
         }
         order.update(request.getQuantity(), amount, product);
 
@@ -109,11 +109,16 @@ public class OrderService {
                 () -> new IllegalStateException("올바른 상품명을 입력해주세요."));
     }
 
-    public boolean checkProductStock(int quantity, Product product) {
+    public void checkProductStock(int quantity, Product product) {
         //주문 가능 여부 check (재고 부족)
         if (quantity > product.getStockQuantity()) {
-            throw new IllegalStateException("재고가 부족합니다. 구매 수량을 수정해주세요.");
+            throw new IllegalStateException("주문하시려는 상품의 재고가 부족합니다.");
         }
-        return true;
+    }
+
+    public void checkUserId(Order order, Users user) {
+        if (!user.getId().equals(order.getUser().getId())) {
+            throw new IllegalArgumentException("해당 요청은 관리자만 수행할 수 있습니다.");
+        }
     }
 }
