@@ -2,6 +2,8 @@ package com.sparta.customerproductsystem.domain.entity;
 
 import com.sparta.customerproductsystem.domain.role.UserRole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,15 +19,17 @@ public class Users extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Email
     @Column(nullable = false, unique = true)
     private String email;
+    @Size(min = 8, message = "비밀번호는 최소 8자 이상, 영문,숫자,특수문자 조합을 권장합니다.")
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
     private String name;
 
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private UserRole role = UserRole.CUSTOMER;
 
     @OneToMany(mappedBy = "user")
     private List<Review> reviews;
