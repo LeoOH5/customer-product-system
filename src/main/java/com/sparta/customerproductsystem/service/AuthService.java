@@ -3,6 +3,8 @@ package com.sparta.customerproductsystem.service;
 import com.sparta.customerproductsystem.domain.entity.Users;
 import com.sparta.customerproductsystem.domain.role.UserRole;
 import com.sparta.customerproductsystem.dto.*;
+import com.sparta.customerproductsystem.exception.BusinessException;
+import com.sparta.customerproductsystem.exception.ErrorCode;
 import com.sparta.customerproductsystem.repository.UserRepository;
 import com.sparta.customerproductsystem.utils.JwtUtils;
 import jakarta.validation.Valid;
@@ -21,7 +23,7 @@ public class AuthService {
     @Transactional
     public SignUpResponse saveUsers(@Valid SignUpRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("존재하는 이메일입니다");
+            throw BusinessException.of(ErrorCode.INVALID_EMAIL_FORMAT);
         }
         Users users = new Users(request.getEmail(),
                 passwordEncoder.encode(request.getPassword()),
@@ -34,10 +36,10 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest loginRequest) {
         Users users = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다"));
+                .orElseThrow(() -> BusinessException.of(ErrorCode.INVALID_EMAIL_FORMAT));
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), users.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 잘못되었습니다");
+            throw BusinessException.of(ErrorCode.IVALID_PASSWORD);
         }
 
         String userRole = users.getRole().toString();
@@ -50,7 +52,7 @@ public class AuthService {
     @Transactional
     public AdminCreateUserResponse adminUserSave(AdminCreateUserRequest adminCreateUserRequest) {
         if (userRepository.existsByEmail(adminCreateUserRequest.getEmail())) {
-            throw new IllegalArgumentException("존재하는 이메일입니다");
+            throw BusinessException.of(ErrorCode.INVALID_EMAIL_FORMAT);
         }
 
         Users user = new Users(adminCreateUserRequest.getEmail(),
