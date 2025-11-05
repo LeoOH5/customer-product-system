@@ -28,16 +28,17 @@ customer-product-system
 │   ├── main
 │   │   ├── java
 │   │   │   └── com.sparta.customerproductsystem
-│   │   │       ├── config               # Security, JWT 등 환경설정
+│   │   │       ├── config               # Spring Security 등 환경설정
 │   │   │       ├── controller           # API 요청/응답 처리 (User, Product 등)
 │   │   │       ├── domain
 │   │   │       │   └── entity           # JPA 엔티티 클래스
 │   │   │       ├── dto                  # 요청/응답 DTO 클래스
-│   │   │       ├── jwt                  # JWT 인증 관련 클래스 (JwtUtil, Filter, UserInfo)
+│   │   │       ├── utils                # JWT 토큰 생성, 검증, 파싱을 전담하는 유틸리티 클래스 
 │   │   │       ├── repository           # JPA Repository 인터페이스
-│   │   │       └── service              # 비즈니스 로직 처리 (UserService, ProductService 등)
+│   │   │       │── service              # 비즈니스 로직 처리 (UserService, ProductService 등)
+│   │   │       └── security             # JWT 인증 관련 클래스 (JwtFilter, UserPrincipal)
 │   │   └── resources
-│   │       ├── application.yml          # DB 및 Security 설정
+│   │       ├── application.properties   # DB 및 Security 설정
 │   │       └── static / templates       # (필요 시) 정적 리소스 / 템플릿
 │   └── test
 │       └── java …                     # 단위 테스트
@@ -58,6 +59,11 @@ customer-product-system
 
 ### 2️⃣ 환경 변수 (.env)
 > `.env` 파일은 Git에 커밋되지 않으며, 각자 로컬에서 직접 설정해야 합니다.
+- JWT_SECRET_KEY
+- DB_PASSWORD
+- LOWSTOCK_THRESHOLD
+- ACCESS_TOKEN_EXPIRATION 
+- REFRESH_TOKEN_EXPIRATION
 
 > **참고:** `.gitignore`에 `.env`가 포함되어 있어 커밋되지 않습니다.
 
@@ -77,10 +83,9 @@ git clone https://github.com/LeoOH5/customer-product-system.git
 
 ## 🔐 인증 절차
 
-1. 사용자는 /login 또는 /auth/signup 으로 AccessToken 발급
+1. 사용자는 /user/auth/login으로 AccessToken 발급
 2. JWT 토큰은 Authorization: Bearer 형식으로 전송
 3.	JwtAuthenticationFilter 가 토큰을 검증하고
-→ UserInfo 객체 생성
 → SecurityContext 에 Authentication 등록
 
 ---
@@ -105,7 +110,23 @@ git clone https://github.com/LeoOH5/customer-product-system.git
 - `.env` 환경 변수 파일 기반 설정 (DB, JWT Secret 등)
 - `.gitignore`로 민감 정보 비공개 유지
 
----
-## API 명세서
+### 공통 응답 포맷 
+- Common Response를 이용한 성공/실패 메세지 통일화
 
-- 어떻게 담을지 고민...
+---
+## 🧱 ERD 다이어그램
+- [ERD 클라우드 링크](https://www.erdcloud.com/d/warAmjHserrP7bJ9u)
+- 주요 엔티티: `User`, `Product`, `Order`, `Review`
+- 관계:
+  ```
+  Users (1) ─── (N) Orders (N) ─── (1) Products
+  │                         │
+  └─────────── (N) Reviews (N) ─── (1)
+  ```
+
+![ERD Diagram](./assets/erd.png)
+
+## 🔗 API 명세서
+
+- [API 명세서 노션 링크](https://www.notion.so/teamsparta/29d2dc3ef514805e8401f3c0c01e4eff?v=29d2dc3ef514818fb416000c65879c5b&source=copy_link)
+![ERD Diagram](./assets/api1.png)
