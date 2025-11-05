@@ -7,19 +7,21 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class SignUpResponse {
+public class AdminCreateUserResponse {
 
     private final Long id;
     private final String email;
+    private final String password;
     private final String name;
-    private final UserRole role;
+    private final String role;
     private final LocalDateTime createdAt;
 
-    public SignUpResponse(Users user) {
+    public AdminCreateUserResponse(Users user) {
         this.id = user.getId();
         this.email = user.getEmail();
-        this.name =  user.getName();
-        this.role = user.getRole();
+        this.password = user.getPassword();
+        this.name = user.getName();
+        this.role = user.getRole().name();
         this.createdAt = user.getCreatedAt();
     }
 }
