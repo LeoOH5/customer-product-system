@@ -3,8 +3,8 @@ package com.sparta.customerproductsystem.service;
 import com.sparta.customerproductsystem.domain.entity.Users;
 import com.sparta.customerproductsystem.domain.role.UserRole;
 import com.sparta.customerproductsystem.dto.*;
+import com.sparta.customerproductsystem.repository.UserRepository;
 import com.sparta.customerproductsystem.utils.JwtUtils;
-import com.sparta.customerproductsystem.repository.UsersDetailRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,7 +49,7 @@ public class AuthService {
 
     @Transactional
     public AdminCreateUserResponse adminUserSave(AdminCreateUserRequest adminCreateUserRequest) {
-        if (usersDetailRepository.existsByEmail(adminCreateUserRequest.getEmail())) {
+        if (userRepository.existsByEmail(adminCreateUserRequest.getEmail())) {
             throw new IllegalArgumentException("존재하는 이메일입니다");
         }
 
@@ -57,7 +57,7 @@ public class AuthService {
                 passwordEncoder.encode(adminCreateUserRequest.getPassword()),
                 adminCreateUserRequest.getName(),
                 adminCreateUserRequest.getRole());
-        usersDetailRepository.save(user);
+        userRepository.save(user);
 
         return new AdminCreateUserResponse(user);
     }
