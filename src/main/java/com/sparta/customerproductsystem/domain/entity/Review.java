@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "reviews")
 @Getter
@@ -14,6 +16,13 @@ public class Review extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String username;
+
+    @Column(name = "product_name")
+    private String productName;
+
+    private double rating;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private Users user;
@@ -22,11 +31,17 @@ public class Review extends BaseTimeEntity {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    private String username;
+    public static Review create(Users user, Product product, double rating) {
 
-    @Column(name = "product_name")
-    private String productName;
+        Review r = new Review();
+        r.user = user;
+        r.product = product;
+        r.username = user.getName();
+        r.productName = product.getName();
+        r.rating = rating;
 
-    private double rating;
-
+        product.addReview(r);
+        user.addReview(r);
+        return r;
+    }
 }
