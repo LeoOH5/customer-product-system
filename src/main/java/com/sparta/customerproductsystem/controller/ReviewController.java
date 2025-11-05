@@ -55,4 +55,15 @@ public class ReviewController {
         PatchReviewResponse response = reviewService.patchReview(user, productId, reviewId, reviewRequest);
         return ResponseEntity.ok(response);
     }
+
+    // 리뷰 삭제(사용자)
+    @DeleteMapping("/products/{productId}/reviews/{reviewId}")
+    public ResponseEntity<DeleteReviewResponse> deleteReview(
+            @PathVariable Long productId,
+            @PathVariable Long reviewId,
+            @AuthenticationPrincipal UserPrincipal user
+    ) {
+        DeleteReviewResponse deleteReviewResponse = reviewService.DeleteReview(user, productId, reviewId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(deleteReviewResponse);
+    }
 }
