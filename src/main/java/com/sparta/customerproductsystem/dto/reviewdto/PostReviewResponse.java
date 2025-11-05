@@ -7,27 +7,32 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-@AllArgsConstructor
 public class PostReviewResponse {
-    private Long id;
-    private Long productId;
-    private Long userId;
-    private String username;
-    private String productName;
-    private double rating;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private final Long id;
+    private final String productName;
+    private final String description;
+    private final String userName;
+    private final double rating;
+    private final LocalDateTime createdAt;
+
+    public PostReviewResponse(Long id, String productName, String description, String userName, double rating, LocalDateTime createdAt) {
+        this.id = id;
+        this.productName = productName;
+        this.description = description;
+        this.userName = userName;
+        this.rating = rating;
+        this.createdAt = createdAt;
+    }
+
 
     public static PostReviewResponse from(Review r) {
         return new PostReviewResponse(
                 r.getId(),
-                r.getProduct().getId(),
-                r.getUser().getId(),
-                r.getUsername(),
-                r.getProductName(),
+                r.getProduct().getName(),
+                r.getDescription(),
+                r.getUser().getName(),
                 r.getRating(),
-                r.getCreatedAt(),
-                r.getUpdatedAt()
+                r.getCreatedAt()
         );
     }
 }

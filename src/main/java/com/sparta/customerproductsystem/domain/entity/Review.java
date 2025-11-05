@@ -1,8 +1,10 @@
 package com.sparta.customerproductsystem.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -16,11 +18,15 @@ public class Review extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
-
     @Column(name = "product_name")
     private String productName;
 
+    private String userName;
+
+    @Setter
+    private String description;
+
+    @Setter
     private double rating;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,7 +42,7 @@ public class Review extends BaseTimeEntity {
         Review r = new Review();
         r.user = user;
         r.product = product;
-        r.username = user.getName();
+        r.userName = user.getName();
         r.productName = product.getName();
         r.rating = rating;
 

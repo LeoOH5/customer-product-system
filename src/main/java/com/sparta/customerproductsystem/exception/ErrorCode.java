@@ -34,6 +34,7 @@ public enum ErrorCode {
 
     //403,
     FORBIDDEN_ADMIN_ONLY(HttpStatus.FORBIDDEN, "해당 요청은 관리자만 수행할 수 있습니다."),
+    FORBIDDEN_AUTHOR_ONLY(HttpStatus.FORBIDDEN,"작성자 본인만 수정할 수 있습니다."),
 
     //404,
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
@@ -41,6 +42,7 @@ public enum ErrorCode {
 
     //409,
     USER_DUPLICATED_EMAIL(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
+    REVIEW_DUPLICATED_REVIEW(HttpStatus.CONFLICT, "이미 이 상품에 작성한 리뷰가 있습니다. 수정만 가능합니다."),
 
     //500
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");

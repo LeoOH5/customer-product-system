@@ -16,7 +16,9 @@ public class GetUserPageResponse {
     private final boolean first;
     private final boolean last;
 
-    public GetUserPageResponse(List<GetUserListResponse> userList, int currentPage, int totalPages, long totalElements, int size, boolean first, boolean last) {
+    public GetUserPageResponse(
+            List<GetUserListResponse> userList, int currentPage, int totalPages,
+            long totalElements, int size, boolean first, boolean last) {
         this.userList = userList;
         this.currentPage = currentPage;
         this.totalPages = totalPages;
