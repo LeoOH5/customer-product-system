@@ -33,6 +33,8 @@ public class Product extends BaseTimeEntity{
 
     private String imageUrl;
 
+    private Long totalSales;
+
     public void setName(String name) {
         this.name = name;
     }
@@ -61,5 +63,11 @@ public class Product extends BaseTimeEntity{
             return ProductRole.OUT_OF_STOCK;
         }
         return ProductRole.AVAILABLE;
+    }
+
+    public void setTotalSales(int stockQuantity, int sales) {
+
+        this.stockQuantity = stockQuantity - sales;
+        this.totalSales += sales;
     }
 }

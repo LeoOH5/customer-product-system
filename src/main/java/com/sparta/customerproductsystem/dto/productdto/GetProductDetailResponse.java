@@ -25,10 +25,10 @@ public class GetProductDetailResponse {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private boolean lowStock;
+    private Long totalScales;
 
     /*
-    오더랑 리뷰 들어와야함
-    private Long totalScales;
+    리뷰 들어와야함
     private Long totalReviews;
     private double averageRating;
     */
