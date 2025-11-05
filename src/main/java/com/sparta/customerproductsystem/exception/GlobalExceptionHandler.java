@@ -14,17 +14,26 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex,
-                                                                 HttpServletRequest request) {
+    public ResponseEntity<CommonResponse<ErrorDetail>> handleBusinessException(
+            BusinessException ex, HttpServletRequest request) {
 
-        ErrorResponse response = new ErrorResponse(LocalDateTime.now(),
-                ex.getErrorCode().getStatus().value(),
-                ex.getErrorCode().getStatus().getReasonPhrase(),
-                ex.getErrorCode().getStatus().name(),
-                ex.getMessage(),
-                request.getRequestURI());
+        var code = ex.getErrorCode();
 
-        return ResponseEntity.status(ex.getErrorCode().getStatus()).body(response);
+        ErrorDetail detail = ErrorDetail.builder()
+                .timestamp(LocalDateTime.now())
+                .status(code.getStatus().value())
+                .error(code.getStatus().getReasonPhrase())
+                .errorCode(code.name())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        CommonResponse<ErrorDetail> body = CommonResponse.<ErrorDetail>builder()
+                .data(detail)
+                .build();
+
+        return ResponseEntity.status(code.getStatus()).body(body);
+
     }
 
 }

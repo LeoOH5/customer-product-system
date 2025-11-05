@@ -1,6 +1,7 @@
 package com.sparta.customerproductsystem.controller;
 
 import com.sparta.customerproductsystem.dto.productdto.*;
+import com.sparta.customerproductsystem.exception.CommonResponse;
 import com.sparta.customerproductsystem.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,41 +18,72 @@ public class ProductController {
 
     private final ProductService productService;
 
-    // Product 등록
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<PostProductResponse> create(@Valid @RequestBody PostProductRequest postProductRequest){
-        PostProductResponse postProductResponse = productService.postProduct(postProductRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(postProductResponse);
+    public ResponseEntity<CommonResponse<PostProductResponse>> create(
+            @Valid @RequestBody PostProductRequest postProductRequest) {
+
+        PostProductResponse result = productService.postProduct(postProductRequest);
+        CommonResponse<PostProductResponse> body = CommonResponse.<PostProductResponse>builder()
+                .data(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
+
 
     // Product 조회
     @GetMapping
-    public ResponseEntity<GetProductPageResponse> getProducts(
+    public ResponseEntity<CommonResponse> getProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ){
-        return ResponseEntity.ok(productService.getProduct(page, size));
+        GetProductPageResponse result = productService.getProduct(page, size);
+
+        CommonResponse<GetProductPageResponse> body = CommonResponse.<GetProductPageResponse>builder()
+                .data(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
     // Product 상세 조회
     @GetMapping("/{id}")
-    public ResponseEntity<GetProductDetailResponse> getProduct(@PathVariable Long id){
-        return ResponseEntity.ok(productService.getProductDetail(id));
+    public ResponseEntity<CommonResponse> getProduct(@PathVariable Long id){
+
+        GetProductDetailResponse result = productService.getProductDetail(id);
+
+        CommonResponse<GetProductDetailResponse> body = CommonResponse.<GetProductDetailResponse>builder()
+                .data(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
     // Product 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<PatchProductResponse> updateProduct(
+    public ResponseEntity<CommonResponse> updateProduct(
             @PathVariable Long id,
             @RequestBody PatchProductRequest request
     ) {
-        return ResponseEntity.ok(productService.patchProduct(id, request));
+        PatchProductResponse result = productService.patchProduct(id, request);
+
+        CommonResponse<PatchProductResponse> body = CommonResponse.<PatchProductResponse>builder()
+                .data(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
     // Product 검색
     @GetMapping("/keyword")
-    public ResponseEntity<List<GetProductSearchResponse>> searchProducts(@RequestParam String q) {
-        return ResponseEntity.ok(productService.searchProducts(q));
+    public ResponseEntity<CommonResponse<List<GetProductSearchResponse>>> searchProducts(@RequestParam String q) {
+        List<GetProductSearchResponse> result = productService.searchProducts(q);
+
+        CommonResponse<List<GetProductSearchResponse>> body = CommonResponse.<List<GetProductSearchResponse>>builder()
+                .data(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
 }
