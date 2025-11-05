@@ -30,6 +30,7 @@ public enum ErrorCode {
 
     //403,
     FORBIDDEN_ADMIN_ONLY(HttpStatus.FORBIDDEN, "해당 요청은 관리자만 수행할 수 있습니다."),
+    FORBIDDEN_AUTHOR_ONLY(HttpStatus.FORBIDDEN,"작성자 본인만 수정할 수 있습니다."),
 
     //404,
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),

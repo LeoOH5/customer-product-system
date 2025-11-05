@@ -77,8 +77,28 @@ public class ReviewService {
                 .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
 
         return GetOneReviewResponse.from(review);
+    }
 
+    // 리뷰 수정 기능 구현
+    @Transactional
+    public PatchReviewResponse patchReview(UserPrincipal principal, Long productId, Long reviewId, PatchReviewRequest req) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다. id=" + reviewId));
 
+        // 작성자 본인 여부 검증
+        boolean isOwner = review.getUser().getId().equals(principal.getId());
+        if (!isOwner) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_AUTHOR_ONLY);
+        }
+
+        if (!review.getProduct().getId().equals(productId)) {
+            throw new IllegalArgumentException("요청한 상품과 리뷰의 상품이 일치하지 않습니다.");
+        }
+
+        review.setDescription(req.getDescription());
+        review.setRating(req.getRating());
+
+        return PatchReviewResponse.from(review);
     }
 }
 

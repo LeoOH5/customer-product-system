@@ -1,5 +1,6 @@
 package com.sparta.customerproductsystem.controller;
 
+import com.sparta.customerproductsystem.dto.PatchUserUpdateRequest;
 import com.sparta.customerproductsystem.dto.reviewdto.*;
 import com.sparta.customerproductsystem.security.UserPrincipal;
 import com.sparta.customerproductsystem.service.ReviewService;
@@ -41,5 +42,17 @@ public class ReviewController {
     public ResponseEntity<GetOneReviewResponse> getOneReview(@PathVariable Long reviewId) {
         GetOneReviewResponse getOneReviewResponse = reviewService.getOneReview(reviewId);
         return ResponseEntity.status(HttpStatus.OK).body(getOneReviewResponse);
+    }
+
+    // 리뷰 수정
+    @PatchMapping("/products/{productId}/reviews/{reviewId}")
+    public ResponseEntity<PatchReviewResponse> patchReview(
+            @PathVariable Long productId,
+            @PathVariable Long reviewId,
+            @Valid @RequestBody PatchReviewRequest reviewRequest,
+            @AuthenticationPrincipal UserPrincipal user
+    ) {
+        PatchReviewResponse response = reviewService.patchReview(user, productId, reviewId, reviewRequest);
+        return ResponseEntity.ok(response);
     }
 }

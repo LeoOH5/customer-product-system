@@ -27,6 +27,7 @@ public class Review extends BaseTimeEntity {
     @Setter
     private String description;
 
+    @Setter
     private double rating;
 
     @ManyToOne(fetch = FetchType.LAZY)
