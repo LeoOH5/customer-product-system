@@ -9,7 +9,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-@Component //빈등록해서 사용하기
+@Component
 public class JwtUtils {
     private final SecretKey secretKey;
     private final long accessTokenExpiration;
