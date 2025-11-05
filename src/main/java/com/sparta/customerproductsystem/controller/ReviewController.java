@@ -56,7 +56,7 @@ public class ReviewController {
             @AuthenticationPrincipal UserPrincipal user
     ) {
         PatchReviewResponse response = reviewService.patchReview(user, productId, reviewId, reviewRequest);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 리뷰 삭제(사용자)
@@ -70,13 +70,14 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(deleteReviewResponse);
     }
 
-    // 리뷰 리스트 조회 + 페이징
+    // 리뷰 리스트 조회 + 페이징 + 검색 기능 구현
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/reviews")
     public ResponseEntity<GetReviewListByAdminResponse> getAdminReviews(
+            @RequestParam(required = false) String keyword,
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        GetReviewListByAdminResponse response = reviewService.getAdminReviewResponse(pageable);
-        return ResponseEntity.ok(response);
+        GetReviewListByAdminResponse response = reviewService.getAdminReviewResponse(keyword, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
