@@ -20,12 +20,15 @@ public class Users extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Email
     @Column(nullable = false, unique = true)
     private String email;
+
     @Size(min = 8, message = "비밀번호는 최소 8자 이상, 영문,숫자,특수문자 조합을 권장합니다.")
     @Column(nullable = false)
     private String password;
+
     @Setter
     @Column(nullable = false)
     private String name;

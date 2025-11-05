@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/products")
@@ -36,4 +38,20 @@ public class ProductController {
     public ResponseEntity<GetProductDetailResponse> getProduct(@PathVariable Long id){
         return ResponseEntity.ok(productService.getProductDetail(id));
     }
+
+    // Product 수정
+    @PatchMapping("/{id}")
+    public ResponseEntity<PatchProductResponse> updateProduct(
+            @PathVariable Long id,
+            @RequestBody PatchProductRequest request
+    ) {
+        return ResponseEntity.ok(productService.patchProduct(id, request));
+    }
+
+    // Product 검색
+    @GetMapping("/keyword")
+    public ResponseEntity<List<GetProductSearchResponse>> searchProducts(@RequestParam String q) {
+        return ResponseEntity.ok(productService.searchProducts(q));
+    }
+
 }
