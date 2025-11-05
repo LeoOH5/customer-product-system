@@ -100,6 +100,10 @@ git clone https://github.com/LeoOH5/customer-product-system.git
 - 상품 등록, 수정, 삭제, 조회 기능
 - 상품 상태(Status), 재고(Stock) 및 카테고리(Category) 관리
 
+### 주문 관리
+- 주문 등록, 조회, 수정, 삭제 기능
+- 주문 등록, 삭제 시 상품의 재고(Stock) 변경
+
 
 ### 인증 및 인가
 - JWT 기반 로그인 및 인증 처리
