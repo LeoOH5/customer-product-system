@@ -1,7 +1,7 @@
 package com.sparta.customerproductsystem.controller;
 
 import com.sparta.customerproductsystem.dto.*;
-import com.sparta.customerproductsystem.security.UserPrincipal;
+import com.sparta.customerproductsystem.exception.CommonResponse;
 import com.sparta.customerproductsystem.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,31 +20,58 @@ public class AuthController {
 
     //유저 회원가입
     @PostMapping("/user/auth/register")
-    public ResponseEntity<SignUpResponse> signup(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<CommonResponse<SignUpResponse>> signup(@Valid @RequestBody SignUpRequest signUpRequest) {
+
         SignUpResponse result = authService.saveUsers(signUpRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+
+        CommonResponse<SignUpResponse> body = CommonResponse.<SignUpResponse>builder()
+                .data(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(body);
+
     }
 
     //유저 로그인
     @PostMapping("/user/auth/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+        public ResponseEntity<CommonResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest loginRequest) {
+
         LoginResponse result = authService.login(loginRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+
+        CommonResponse<LoginResponse> body = CommonResponse.<LoginResponse>builder()
+                .data(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
     //토큰 재발급
     @PostMapping("/user/auth/refresh")
-    public ResponseEntity<RefreshResponse> refresh(@Valid @RequestBody RefreshRequest refreshRequest) {
+    public ResponseEntity<CommonResponse<RefreshResponse>> refresh(@Valid @RequestBody RefreshRequest refreshRequest) {
+
         RefreshResponse result = authService.refresh(refreshRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+
+        CommonResponse<RefreshResponse> body = CommonResponse.<RefreshResponse>builder()
+                .data(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(body);
+
     }
 
     //관리자권한 회원 추가
     @PostMapping("/admin/user")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AdminCreateUserResponse> adminUserSave(@Valid @RequestBody AdminCreateUserRequest adminCreateUserRequest) {
+    public ResponseEntity<CommonResponse<AdminCreateUserResponse>> adminUserSave(@Valid @RequestBody AdminCreateUserRequest adminCreateUserRequest) {
+
         AdminCreateUserResponse result = authService.adminUserSave(adminCreateUserRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+
+        CommonResponse<AdminCreateUserResponse> body = CommonResponse.<AdminCreateUserResponse>builder()
+                .data(result)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(body);
+
     }
 
     //로그아웃

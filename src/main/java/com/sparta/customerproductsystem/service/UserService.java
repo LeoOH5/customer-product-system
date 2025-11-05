@@ -3,6 +3,8 @@ package com.sparta.customerproductsystem.service;
 import com.sparta.customerproductsystem.domain.entity.Users;
 import com.sparta.customerproductsystem.domain.role.UserRole;
 import com.sparta.customerproductsystem.dto.*;
+import com.sparta.customerproductsystem.exception.BusinessException;
+import com.sparta.customerproductsystem.exception.ErrorCode;
 import com.sparta.customerproductsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,7 +37,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public GetUserDetailResponse findUserById(Long id) {
         Users user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> BusinessException.of(ErrorCode.INVALID_USER));
         return GetUserDetailResponse.from(user);
     }
 

@@ -7,14 +7,17 @@ public enum ErrorCode {
     INVALID_QUERY_PARAMETER(HttpStatus.BAD_REQUEST, "요청 파라미터가 유효하지 않습니다."), //요청 파라미터가 유효하지 않습니다.
     VALIDATION_FAILED(HttpStatus.BAD_REQUEST, "입력값이 유효하지 않습니다."), //입력값이 유효하지 않습니다.
           // - AUTH
-    INVALID_EMAIL_FORMAT(HttpStatus.BAD_REQUEST, "이메일 형식이 올바르지 않습니다."),
+    INVALID_EMAIL_FORMAT(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다."),
     INVALID_TOKEN_FORMAT(HttpStatus.BAD_REQUEST, "accessToken 값이 올바르지 않습니다."),
     MISSING_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "refreshToken 필드가 누락되었습니다."),
           // - USER
+    INVALID_USER(HttpStatus.BAD_REQUEST, "유저가 존재하지 않습니다."),
+    IVALID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 올바르지 않습니다."),
     INVALID_KEYWORD(HttpStatus.BAD_REQUEST, "검색 키워드가 유효하지 않습니다."),
     INVALID_UPDATE_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 수정 요청입니다."),
           // - PRODUCT
     INVALID_PRODUCT_ID(HttpStatus.BAD_REQUEST, "상품 ID가 올바르지 않습니다."),
+    INVALID_PRODUCT_INSERT(HttpStatus.BAD_REQUEST, "올바른 상품명을 입력해주세요."),
     INVALID_PRODUCT_NAME(HttpStatus.BAD_REQUEST, "중복된 상품입니다.."),
     INVALID_PRODUCT_UPDATE(HttpStatus.BAD_REQUEST, "재고 수량은 0 이하로 수정할 수 없습니다."),
           // - ORDER
