@@ -49,7 +49,7 @@ public enum ErrorCode {
         this.message = message;
     }
 
-    public HttpStatus getHttpStatus() {
+    public HttpStatus getStatus() {
         return httpStatus;
     }
     public String getMessage() {
