@@ -17,7 +17,7 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<CreateOrderResponse> createOrder(@RequestBody CreateOrderRequest request,
-                                                                         @AuthenticationPrincipal Users user) {
+                                                           @AuthenticationPrincipal Users user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.save(request, user));
     }
 
@@ -36,7 +36,7 @@ public class OrderController {
     @PatchMapping("/{orderId}")
     public ResponseEntity<GetOrderResponse> patchOrder(@PathVariable Long orderId,
                                                        @RequestBody CreateOrderRequest request,
-                                                         @AuthenticationPrincipal Users user) {
+                                                       @AuthenticationPrincipal Users user) {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.update(orderId, request, user));
     }
 }
