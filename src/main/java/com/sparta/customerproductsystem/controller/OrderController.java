@@ -1,6 +1,5 @@
 package com.sparta.customerproductsystem.controller;
 
-import com.sparta.customerproductsystem.domain.entity.Users;
 import com.sparta.customerproductsystem.dto.orderdto.*;
 import com.sparta.customerproductsystem.security.UserPrincipal;
 import com.sparta.customerproductsystem.service.OrderService;

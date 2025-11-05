@@ -12,6 +12,7 @@ import com.sparta.customerproductsystem.repository.UserRepository;
 import com.sparta.customerproductsystem.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,35 +47,30 @@ public class OrderService {
 
     }
 
+    @PreAuthorize("#user.id == principal.id or hasRole('ADMIN')")
     @Transactional(readOnly = true)
     public GetOrderResponse getOne(Long orderId, UserPrincipal user) {
 
         Order order = findOrderById(orderId);
-        Users userInfo = findUserById(user.getId());
 
-        // 관리자 조회 시 전체 사용자의 Order 조회 가능
-        if(user.getRole().equals(UserRole.ADMIN)) {
-            return GetOrderResponse.from(order);
-        }
-        // 사용자 조회 시 해당 사용자 Order 건만 조회 가능
         // 삭제를 요청한 사용자가 Order user_id와 같은지 check
         try {
-            checkUserId(order, userInfo);
+            checkUserId(order, user);
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());// 이후 exceptionHandler로 처리
         }
         return GetOrderResponse.from(order);
     }
 
+    @PreAuthorize("#user.id == principal.id or hasRole('ADMIN')")
     @Transactional
     public DeleteOrderResponse delete(Long orderId, UserPrincipal user) {
 
         Order order = findOrderById(orderId);
-        Users userInfo = findUserById(user.getId());
 
         // 삭제를 요청한 사용자가 Order user_id와 같은지 check
         try {
-            checkUserId(order, userInfo);
+            checkUserId(order, user);
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());// 이후 exceptionHandler로 처리
         }
@@ -83,12 +79,12 @@ public class OrderService {
         return new DeleteOrderResponse(order.getId(), order.getStatus());
     }
 
+    @PreAuthorize("#user.id == principal.id or hasRole('ADMIN')")
     @Transactional
     public GetOrderResponse update(Long orderId, CreateOrderRequest request, UserPrincipal user) {
 
         Order order = findOrderById(orderId);
         Product product = findProductByName(request.getName());
-        Users userInfo = findUserById(user.getId());
 
         // 수정할 상품 재고 check
         try {
@@ -98,15 +94,10 @@ public class OrderService {
         }
         int amount = product.getPrice() * request.getQuantity();
 
-        // 관리자 조회 시 전체 사용자의 Order 조회 가능
-        if(user.getRole().equals(UserRole.ADMIN)) {
-            return GetOrderResponse.from(order);
-        }
-
         // 사용자 조회 시 해당 사용자 Order 건만 조회 가능
         // 사용자 일치하는지 check
         try {
-            checkUserId(order, userInfo);
+            checkUserId(order, user);
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());// 이후 exceptionHandler로 처리
         }
@@ -140,9 +131,9 @@ public class OrderService {
         }
     }
 
-    public void checkUserId(Order order, Users user) {
+    public void checkUserId(Order order, UserPrincipal user) {
 
-        if (!user.getId().equals(order.getUser().getId())) {
+        if ((!order.getUser().getId().equals(user.getId())) && (!user.getRole().equals(UserRole.ADMIN))) {
             throw new IllegalArgumentException("해당 요청은 관리자만 수행할 수 있습니다.");
         }
     }
