@@ -43,7 +43,7 @@ public class ProductController {
                 .data(result)
                 .build();
 
-        return ResponseEntity.ok(body);
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
     // Product 상세 조회
@@ -56,7 +56,7 @@ public class ProductController {
                 .data(result)
                 .build();
 
-        return ResponseEntity.ok(body);
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
     // Product 수정
@@ -71,7 +71,7 @@ public class ProductController {
                 .data(result)
                 .build();
 
-        return ResponseEntity.ok(body);
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
     // Product 검색
@@ -83,7 +83,7 @@ public class ProductController {
                 .data(result)
                 .build();
 
-        return ResponseEntity.ok(body);
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
 }
