@@ -3,14 +3,16 @@ package com.sparta.customerproductsystem.service;
 import com.sparta.customerproductsystem.domain.entity.Product;
 import com.sparta.customerproductsystem.domain.entity.Review;
 import com.sparta.customerproductsystem.domain.entity.Users;
-import com.sparta.customerproductsystem.dto.reviewdto.PostReviewRequest;
-import com.sparta.customerproductsystem.dto.reviewdto.PostReviewResponse;
+import com.sparta.customerproductsystem.dto.reviewdto.*;
 import com.sparta.customerproductsystem.repository.ProductRepository;
 import com.sparta.customerproductsystem.repository.ReviewRepository;
 import com.sparta.customerproductsystem.repository.UserRepository;
+import com.sparta.customerproductsystem.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,24 +22,46 @@ public class ReviewService {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
 
-    // 리뷰등록
+    // 리뷰 등록
     @Transactional
-    public PostReviewResponse createReview(Long productId, PostReviewRequest req) {
+    public PostReviewResponse createReview(UserPrincipal user, Long productId, PostReviewRequest req) {
+        // 현재 로그인 사용자 조회
+        Users users = userRepository.findById(user.getId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // 상품 조회
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다. id=" + productId));
+                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
 
-        Users user = userRepository.findById(req.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다. id=" + req.getUserId()));
+        // 리뷰 생성 + 리뷰 내용, 평점 담기
+        Review review = Review.create(users, product, req.getRating());
+        review.setDescription(req.getDescription());
 
-        if (reviewRepository.existsByUserAndProduct(user, product)) {
-            throw new IllegalStateException("이미 이 상품에 대한 리뷰를 작성했습니다.");
-        }
-
-        Review review = Review.create(user, product, req.getRating());
-
+        // 리뷰 저장
         Review saved = reviewRepository.save(review);
 
+        // 응답 변환
         return PostReviewResponse.from(saved);
+    }
+
+    // 다건 리뷰 조회
+    @Transactional(readOnly = true)
+    public List<GetReviewsResponse> getReviews(Long productId) {
+        productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
+
+        List<Review> reviews = reviewRepository.findByProductId(productId);
+
+        return reviews.stream()
+                .map(r -> new GetReviewsResponse(
+                        r.getProduct().getId(),
+                        r.getProduct().getName(),
+                        r.getDescription(),
+                        r.getUser().getName(),
+                        r.getRating(),
+                        r.getCreatedAt()
+                ))
+                .toList();
     }
 }
 

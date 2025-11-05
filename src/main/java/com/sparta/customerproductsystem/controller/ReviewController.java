@@ -1,15 +1,16 @@
 package com.sparta.customerproductsystem.controller;
 
-import com.sparta.customerproductsystem.dto.reviewdto.PostReviewRequest;
-import com.sparta.customerproductsystem.dto.reviewdto.PostReviewResponse;
+import com.sparta.customerproductsystem.dto.reviewdto.*;
+import com.sparta.customerproductsystem.security.UserPrincipal;
 import com.sparta.customerproductsystem.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,10 +19,18 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping("/products/{productId}/reviews")
-    public ResponseEntity<PostReviewResponse> createReview(@PathVariable Long productId,
-                                                           @Valid @RequestBody PostReviewRequest request) {
-        PostReviewResponse response = reviewService.createReview(productId, request);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<PostReviewResponse> createReview(
+            @PathVariable Long productId,
+            @Valid @RequestBody PostReviewRequest request,
+            @AuthenticationPrincipal UserPrincipal user
+        ) {
+        PostReviewResponse response = reviewService.createReview(user, productId, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @GetMapping("/products/{productId}/reviews")
+    public ResponseEntity<List<GetReviewsResponse>> getReviews(@PathVariable Long productId) {
+        List<GetReviewsResponse> reviewsResponses = reviewService.getReviews(productId);
+        return ResponseEntity.status(HttpStatus.OK).body(reviewsResponses);
+    }
 }
