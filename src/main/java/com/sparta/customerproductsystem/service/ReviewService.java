@@ -135,6 +135,14 @@ public class ReviewService {
                 : reviewRepository.searchByKeyword(keyword, pageable);
         return GetReviewListByAdminResponse.from(page);
     }
+
+    // 리뷰 상세 정보 조회(관리자)
+    @Transactional(readOnly = true)
+    public GetReviewDetailByAdminResponse getReviewDetailByAdminResponse(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("Review not found."));
+        return GetReviewDetailByAdminResponse.from(review);
+    }
 }
 
 

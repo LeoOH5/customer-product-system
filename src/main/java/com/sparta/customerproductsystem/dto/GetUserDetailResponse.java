@@ -15,7 +15,8 @@ public class GetUserDetailResponse {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public GetUserDetailResponse(Long id, String email, String name, UserRole role, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public GetUserDetailResponse(
+            Long id, String email, String name, UserRole role, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.email = email;
         this.name = name;

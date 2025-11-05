@@ -80,4 +80,15 @@ public class ReviewController {
         GetReviewListByAdminResponse response = reviewService.getAdminReviewResponse(keyword, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    // 리뷰 상세 조회 (관리자)
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/reviews/{reviewId}")
+    public ResponseEntity<GetReviewDetailByAdminResponse> getReviewDetailByAdmin(
+            @PathVariable Long reviewId,
+            @AuthenticationPrincipal UserPrincipal user
+    ) {
+        GetReviewDetailByAdminResponse response = reviewService.getReviewDetailByAdminResponse(reviewId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }
