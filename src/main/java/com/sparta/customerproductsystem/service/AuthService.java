@@ -14,36 +14,35 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-
-    private final UsersDetailRepository usersDetailRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
 
     @Transactional
-    public SignUpResponse saveUsers(SignUpRequest signUpRequest) {
-        if (usersDetailRepository.existsByEmail(signUpRequest.getEmail())) {
+    public SignUpResponse saveUsers(@Valid SignUpRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("존재하는 이메일입니다");
         }
-        Users user = new Users(signUpRequest.getEmail(),
-                passwordEncoder.encode(signUpRequest.getPassword()),
-                signUpRequest.getName(),
+        Users users = new Users(request.getEmail(),
+                passwordEncoder.encode(request.getPassword()),
+                request.getName(),
                 UserRole.CUSTOMER);
-        usersDetailRepository.save(user);
+        userRepository.save(users);
 
-        return new SignUpResponse(user);
+        return new SignUpResponse(users);
     }
 
     public LoginResponse login(LoginRequest loginRequest) {
-        Users user = usersDetailRepository.findByEmail(loginRequest.getEmail())
+        Users users = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다"));
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), users.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 잘못되었습니다");
         }
 
-        String userRole = user.getRole().toString();
-        String accessToken = jwtUtils.generateAccessToken(user.getId(), user.getEmail(), user.getName(), userRole);
-        String refreshToken = jwtUtils.generateRefreshToken(user.getId(), user.getEmail(), user.getName(), userRole);
+        String userRole = users.getRole().toString();
+        String accessToken = jwtUtils.generateAccessToken(users.getId(), users.getEmail(), users.getName(), userRole);
+        String refreshToken = jwtUtils.generateRefreshToken(users.getId(), users.getEmail(), users.getName(), userRole);
 
         return new LoginResponse(accessToken, refreshToken);
     }
