@@ -1,7 +1,8 @@
 package com.sparta.customerproductsystem.controller;
 
-import com.sparta.customerproductsystem.dto.*;
+import com.sparta.customerproductsystem.dto.authdto.*;
 import com.sparta.customerproductsystem.exception.CommonResponse;
+import com.sparta.customerproductsystem.security.UserPrincipal;
 import com.sparta.customerproductsystem.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

@@ -1,6 +1,6 @@
 package com.sparta.customerproductsystem.controller;
 
-import com.sparta.customerproductsystem.dto.*;
+import com.sparta.customerproductsystem.dto.userdto.*;
 import com.sparta.customerproductsystem.exception.CommonResponse;
 import com.sparta.customerproductsystem.service.UserService;
 import lombok.RequiredArgsConstructor;

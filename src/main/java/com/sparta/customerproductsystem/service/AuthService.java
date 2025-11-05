@@ -3,7 +3,7 @@ package com.sparta.customerproductsystem.service;
 import com.sparta.customerproductsystem.domain.entity.RefreshToken;
 import com.sparta.customerproductsystem.domain.entity.Users;
 import com.sparta.customerproductsystem.domain.role.UserRole;
-import com.sparta.customerproductsystem.dto.*;
+import com.sparta.customerproductsystem.dto.authdto.*;
 import com.sparta.customerproductsystem.exception.BusinessException;
 import com.sparta.customerproductsystem.exception.ErrorCode;
 import com.sparta.customerproductsystem.repository.RefreshTokenRepository;
