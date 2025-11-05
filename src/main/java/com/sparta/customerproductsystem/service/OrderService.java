@@ -9,6 +9,7 @@ import com.sparta.customerproductsystem.dto.orderdto.*;
 import com.sparta.customerproductsystem.repository.OrderRepository;
 import com.sparta.customerproductsystem.repository.ProductRepository;
 import com.sparta.customerproductsystem.repository.UserRepository;
+import com.sparta.customerproductsystem.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public CreateOrderResponse save(CreateOrderRequest request, Users user) {
+    public CreateOrderResponse save(CreateOrderRequest request, UserPrincipal user) {
 
         // 상품명 존재 여부 check
         Product product = findProductByName(request.getName());
@@ -33,8 +35,9 @@ public class OrderService {
             log.error(e.getMessage());// 이후 exceptionHandler로 처리
         }
         int amount = product.getPrice() * request.getQuantity();
+        Users userInfo = findUserById(user.getId());
 
-        Order order = new Order(user, product, request.getQuantity(), amount, OrderRole.OK);
+        Order order = new Order(userInfo, product, request.getQuantity(), amount, OrderRole.OK);
         Order savedOrder = orderRepository.save(order);
 
         product.setTotalSales(product.getStockQuantity(), request.getQuantity());
@@ -44,9 +47,10 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public GetOrderResponse getOne(Long orderId, Users user) {
+    public GetOrderResponse getOne(Long orderId, UserPrincipal user) {
 
         Order order = findOrderById(orderId);
+        Users userInfo = findUserById(user.getId());
 
         // 관리자 조회 시 전체 사용자의 Order 조회 가능
         if(user.getRole().equals(UserRole.ADMIN)) {
@@ -55,7 +59,7 @@ public class OrderService {
         // 사용자 조회 시 해당 사용자 Order 건만 조회 가능
         // 삭제를 요청한 사용자가 Order user_id와 같은지 check
         try {
-            checkUserId(order, user);
+            checkUserId(order, userInfo);
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());// 이후 exceptionHandler로 처리
         }
@@ -63,13 +67,14 @@ public class OrderService {
     }
 
     @Transactional
-    public DeleteOrderResponse delete(Long orderId, Users user) {
+    public DeleteOrderResponse delete(Long orderId, UserPrincipal user) {
 
         Order order = findOrderById(orderId);
+        Users userInfo = findUserById(user.getId());
 
         // 삭제를 요청한 사용자가 Order user_id와 같은지 check
         try {
-            checkUserId(order, user);
+            checkUserId(order, userInfo);
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());// 이후 exceptionHandler로 처리
         }
@@ -79,10 +84,11 @@ public class OrderService {
     }
 
     @Transactional
-    public GetOrderResponse update(Long orderId, CreateOrderRequest request, Users user) {
+    public GetOrderResponse update(Long orderId, CreateOrderRequest request, UserPrincipal user) {
 
         Order order = findOrderById(orderId);
         Product product = findProductByName(request.getName());
+        Users userInfo = findUserById(user.getId());
 
         // 수정할 상품 재고 check
         try {
@@ -100,13 +106,18 @@ public class OrderService {
         // 사용자 조회 시 해당 사용자 Order 건만 조회 가능
         // 사용자 일치하는지 check
         try {
-            checkUserId(order, user);
+            checkUserId(order, userInfo);
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());// 이후 exceptionHandler로 처리
         }
         order.update(request.getQuantity(), amount, product);
 
         return GetOrderResponse.from(order);
+    }
+
+    public Users findUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(
+                () -> new IllegalStateException("User not found"));
     }
 
     public Order findOrderById(Long orderId) {
