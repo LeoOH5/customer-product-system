@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Table(name = "products")
@@ -33,6 +36,9 @@ public class Product extends BaseTimeEntity{
 
     private String imageUrl;
 
+    // 양방향
+    @OneToMany(mappedBy = "product", orphanRemoval = true)
+    private final List<Review> reviews = new ArrayList<>(); // NPE 방지
     private Long totalSales;
 
     public void setName(String name) {
@@ -45,6 +51,11 @@ public class Product extends BaseTimeEntity{
 
     public void setStockQuantity(int stockQuantity) {
         this.stockQuantity = stockQuantity;
+    }
+
+    void addReview(Review review) {
+        if (review == null) return;
+        this.reviews.add(review);
     }
 
     @Builder

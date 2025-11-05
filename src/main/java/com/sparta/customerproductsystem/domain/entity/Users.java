@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,8 +38,14 @@ public class Users extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.CUSTOMER;
 
-    @OneToMany(mappedBy = "user")
-    private List<Review> reviews;
+    // orphanRemoval 고아 삭제
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>(); // NPE 방지
+
+    void addReview(Review review) {
+        if (review == null) return;
+        this.reviews.add(review);
+    }
 
     public Users(String email, String password, String name, UserRole role) {
         this.email = email;
