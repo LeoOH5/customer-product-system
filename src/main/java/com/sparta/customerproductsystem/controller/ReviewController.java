@@ -1,13 +1,16 @@
 package com.sparta.customerproductsystem.controller;
 
-import com.sparta.customerproductsystem.dto.PatchUserUpdateRequest;
 import com.sparta.customerproductsystem.dto.reviewdto.*;
 import com.sparta.customerproductsystem.security.UserPrincipal;
 import com.sparta.customerproductsystem.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,5 +68,15 @@ public class ReviewController {
     ) {
         DeleteReviewResponse deleteReviewResponse = reviewService.DeleteReview(user, productId, reviewId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(deleteReviewResponse);
+    }
+
+    // 리뷰 리스트 조회 + 페이징
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/reviews")
+    public ResponseEntity<GetReviewListByAdminResponse> getAdminReviews(
+            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        GetReviewListByAdminResponse response = reviewService.getAdminReviewResponse(pageable);
+        return ResponseEntity.ok(response);
     }
 }

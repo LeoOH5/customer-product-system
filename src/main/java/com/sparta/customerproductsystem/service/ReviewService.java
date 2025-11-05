@@ -11,6 +11,8 @@ import com.sparta.customerproductsystem.repository.ReviewRepository;
 import com.sparta.customerproductsystem.repository.UserRepository;
 import com.sparta.customerproductsystem.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -123,6 +125,13 @@ public class ReviewService {
         reviewRepository.deleteById(reviewId);
 
         return DeleteReviewResponse.from(review, "리뷰 삭제가 완료되었습니다.");
+    }
+
+    // 관리자 리뷰 리스트 조회
+    @Transactional(readOnly = true)
+    public GetReviewListByAdminResponse getAdminReviewResponse(Pageable pageable) {
+        Page<Review> page = reviewRepository.findAll(pageable); // 레포지토리에 @EntityGraph 적용되어 N+1 방지
+        return GetReviewListByAdminResponse.from(page);        // 기존 ReviewItem 매핑 재사용
     }
 }
 
