@@ -143,6 +143,15 @@ public class ReviewService {
                 .orElseThrow(() -> new IllegalArgumentException("Review not found."));
         return GetReviewDetailByAdminResponse.from(review);
     }
+
+    // 리뷰 삭제(관리자)
+    @Transactional
+    public DeleteReviewByAdminResponse deleteReviewByAdmin(Long reviewId, String comment) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다. id=" + reviewId));
+        reviewRepository.delete(review);
+        return DeleteReviewByAdminResponse.from(review, "리뷰가 삭제되었습니다.", comment);
+    }
 }
 
 

@@ -91,4 +91,16 @@ public class ReviewController {
         GetReviewDetailByAdminResponse response = reviewService.getReviewDetailByAdminResponse(reviewId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    // 리뷰 삭제 (관리자)
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/admin/reviews/{reviewId}")
+    public ResponseEntity<DeleteReviewByAdminResponse> deleteReviewByAdmin(
+            @PathVariable Long reviewId,
+            @RequestBody(required = false) DeleteReviewByAdminRequest body
+    ) {
+        String comment = (body == null) ? null : body.getComment();
+        DeleteReviewByAdminResponse response = reviewService.deleteReviewByAdmin(reviewId, comment); // (B) 사용
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }
