@@ -6,6 +6,8 @@ import com.sparta.customerproductsystem.domain.entity.Users;
 import com.sparta.customerproductsystem.domain.role.OrderRole;
 import com.sparta.customerproductsystem.domain.role.UserRole;
 import com.sparta.customerproductsystem.dto.orderdto.*;
+import com.sparta.customerproductsystem.exception.BusinessException;
+import com.sparta.customerproductsystem.exception.ErrorCode;
 import com.sparta.customerproductsystem.repository.OrderRepository;
 import com.sparta.customerproductsystem.repository.ProductRepository;
 import com.sparta.customerproductsystem.repository.UserRepository;
@@ -30,11 +32,8 @@ public class OrderService {
         // 상품명 존재 여부 check
         Product product = findProductByName(request.getName());
         //주문 가능 여부 check (재고 부족)
-        try {
-            checkProductStock(request.getQuantity(), product);
-        } catch (IllegalStateException e) {
-            log.error(e.getMessage());// 이후 exceptionHandler로 처리
-        }
+        checkProductStock(request.getQuantity(), product);
+
         int amount = product.getPrice() * request.getQuantity();
         Users userInfo = findUserById(user.getId());
 
@@ -53,11 +52,8 @@ public class OrderService {
         Order order = findOrderById(orderId);
 
         // 삭제를 요청한 사용자가 Order user_id와 같은지 check
-        try {
-            checkUserId(order, user);
-        } catch (IllegalArgumentException e) {
-            log.error(e.getMessage());// 이후 exceptionHandler로 처리
-        }
+        checkUserId(order, user);
+
         return GetOrderResponse.from(order);
     }
 
@@ -67,11 +63,8 @@ public class OrderService {
         Order order = findOrderById(orderId);
 
         // 삭제를 요청한 사용자가 Order user_id와 같은지 check
-        try {
-            checkUserId(order, user);
-        } catch (IllegalArgumentException e) {
-            log.error(e.getMessage());// 이후 exceptionHandler로 처리
-        }
+        checkUserId(order, user);
+
         order.delete(order.getStatus());
         order.getProduct().setTotalSales(order.getProduct().getStockQuantity(), -order.getQuantity());
         return new DeleteOrderResponse(order.getId(), order.getStatus());
@@ -84,20 +77,14 @@ public class OrderService {
         Product product = findProductByName(request.getName());
 
         // 수정할 상품 재고 check
-        try {
-            checkProductStock(request.getQuantity(), product);
-        } catch (IllegalStateException e) {
-            // ExceptionHandler로 처리
-        }
+        checkProductStock(request.getQuantity(), product);
+
         int amount = product.getPrice() * request.getQuantity();
 
         // 사용자 조회 시 해당 사용자 Order 건만 조회 가능
         // 사용자 일치하는지 check
-        try {
-            checkUserId(order, user);
-        } catch (IllegalArgumentException e) {
-            log.error(e.getMessage());// 이후 exceptionHandler로 처리
-        }
+        checkUserId(order, user);
+
         order.update(request.getQuantity(), amount, product);
 
         return GetOrderResponse.from(order);
@@ -105,33 +92,33 @@ public class OrderService {
 
     public Users findUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(
-                () -> new IllegalStateException("User not found"));
+                () -> BusinessException.of(ErrorCode.INVALID_USER));
     }
 
     public Order findOrderById(Long orderId) {
 
         return orderRepository.findById(orderId).orElseThrow(
-                () -> new IllegalStateException("요청 파라미터가 유효하지 않습니다."));
+                () -> BusinessException.of(ErrorCode.INVALID_QUERY_PARAMETER));
     }
 
     public Product findProductByName(String productName) {
 
         return productRepository.findByName(productName).orElseThrow(
-                () -> new IllegalStateException("올바른 상품명을 입력해주세요."));
+                () -> BusinessException.of(ErrorCode.INVALID_PRODUCT_INSERT));
     }
 
     public void checkProductStock(int quantity, Product product) {
 
         //주문 가능 여부 check (재고 부족)
         if (quantity > product.getStockQuantity()) {
-            throw new IllegalStateException("주문하시려는 상품의 재고가 부족합니다.");
+            throw BusinessException.of(ErrorCode.INVALID_ORDER_STOCK);
         }
     }
 
     public void checkUserId(Order order, UserPrincipal user) {
 
         if ((!order.getUser().getId().equals(user.getId())) && (!user.getRole().equals(UserRole.ADMIN))) {
-            throw new IllegalArgumentException("해당 요청은 관리자만 수행할 수 있습니다.");
+            throw BusinessException.of(ErrorCode.FORBIDDEN_ADMIN_ONLY);
         }
     }
 }
