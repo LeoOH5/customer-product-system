@@ -1,15 +1,16 @@
 package com.sparta.customerproductsystem.controller;
 
 import com.sparta.customerproductsystem.dto.*;
+import com.sparta.customerproductsystem.security.UserPrincipal;
 import com.sparta.customerproductsystem.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,5 +45,12 @@ public class AuthController {
     public ResponseEntity<AdminCreateUserResponse> adminUserSave(@Valid @RequestBody AdminCreateUserRequest adminCreateUserRequest) {
         AdminCreateUserResponse result = authService.adminUserSave(adminCreateUserRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    //로그아웃
+    @DeleteMapping("/user/auth/logout")
+    public ResponseEntity<Void> logout(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        authService.logout(userPrincipal);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

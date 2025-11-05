@@ -47,6 +47,10 @@ public class Users extends BaseTimeEntity {
         this.reviews.add(review);
     }
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RefreshToken> refreshTokens = new ArrayList<>();
+
+
     public Users(String email, String password, String name, UserRole role) {
         this.email = email;
         this.password = password;
