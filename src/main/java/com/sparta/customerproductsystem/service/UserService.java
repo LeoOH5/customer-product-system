@@ -4,6 +4,8 @@ import com.sparta.customerproductsystem.domain.entity.Users;
 import com.sparta.customerproductsystem.dto.*;
 import com.sparta.customerproductsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +36,14 @@ public class UserService {
         Users user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         return GetUserDetailResponse.from(user);
+    }
+
+    // 유저 리스트 페이지 조회
+    @Transactional(readOnly = true)
+    public GetUserPageResponse getUserListPage(String keyword, Pageable pageable) {
+        Page<Users> users = userRepository
+                .findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword, pageable);
+        return GetUserPageResponse.from(users);
     }
 
     // 유저 정보 수정 (일반유저)
