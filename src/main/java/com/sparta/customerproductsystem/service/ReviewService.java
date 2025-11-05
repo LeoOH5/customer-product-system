@@ -4,6 +4,8 @@ import com.sparta.customerproductsystem.domain.entity.Product;
 import com.sparta.customerproductsystem.domain.entity.Review;
 import com.sparta.customerproductsystem.domain.entity.Users;
 import com.sparta.customerproductsystem.dto.reviewdto.*;
+import com.sparta.customerproductsystem.exception.BusinessException;
+import com.sparta.customerproductsystem.exception.ErrorCode;
 import com.sparta.customerproductsystem.repository.ProductRepository;
 import com.sparta.customerproductsystem.repository.ReviewRepository;
 import com.sparta.customerproductsystem.repository.UserRepository;
@@ -32,6 +34,10 @@ public class ReviewService {
         // 상품 조회
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+
+        if (reviewRepository.existsByUserAndProduct(users, product)) {
+            throw new BusinessException(ErrorCode.REVIEW_DUPLICATED_REVIEW);
+        }
 
         // 리뷰 생성 + 리뷰 내용, 평점 담기
         Review review = Review.create(users, product, req.getRating());
@@ -62,6 +68,17 @@ public class ReviewService {
                         r.getCreatedAt()
                 ))
                 .toList();
+    }
+
+    // 단건 리뷰 조회 기능 구현
+    @Transactional(readOnly = true)
+    public GetOneReviewResponse getOneReview(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
+
+        return GetOneReviewResponse.from(review);
+
+
     }
 }
 

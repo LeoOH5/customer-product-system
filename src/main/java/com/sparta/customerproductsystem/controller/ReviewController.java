@@ -18,6 +18,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
+    // 리뷰 등록
     @PostMapping("/products/{productId}/reviews")
     public ResponseEntity<PostReviewResponse> createReview(
             @PathVariable Long productId,
@@ -28,9 +29,17 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // 리뷰 다건 조회
     @GetMapping("/products/{productId}/reviews")
     public ResponseEntity<List<GetReviewsResponse>> getReviews(@PathVariable Long productId) {
         List<GetReviewsResponse> reviewsResponses = reviewService.getReviews(productId);
         return ResponseEntity.status(HttpStatus.OK).body(reviewsResponses);
+    }
+
+    // 리뷰 단건 조회
+    @GetMapping("/products/{productId}/reviews/{reviewId}")
+    public ResponseEntity<GetOneReviewResponse> getOneReview(@PathVariable Long reviewId) {
+        GetOneReviewResponse getOneReviewResponse = reviewService.getOneReview(reviewId);
+        return ResponseEntity.status(HttpStatus.OK).body(getOneReviewResponse);
     }
 }
