@@ -47,7 +47,6 @@ public class OrderService {
 
     }
 
-    @PreAuthorize("#user.id == principal.id or hasRole('ADMIN')")
     @Transactional(readOnly = true)
     public GetOrderResponse getOne(Long orderId, UserPrincipal user) {
 
@@ -62,7 +61,6 @@ public class OrderService {
         return GetOrderResponse.from(order);
     }
 
-    @PreAuthorize("#user.id == principal.id or hasRole('ADMIN')")
     @Transactional
     public DeleteOrderResponse delete(Long orderId, UserPrincipal user) {
 
@@ -79,7 +77,6 @@ public class OrderService {
         return new DeleteOrderResponse(order.getId(), order.getStatus());
     }
 
-    @PreAuthorize("#user.id == principal.id or hasRole('ADMIN')")
     @Transactional
     public GetOrderResponse update(Long orderId, CreateOrderRequest request, UserPrincipal user) {
 
