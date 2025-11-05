@@ -2,6 +2,8 @@ package com.sparta.customerproductsystem.service;
 
 import com.sparta.customerproductsystem.domain.entity.Product;
 import com.sparta.customerproductsystem.dto.productdto.*;
+import com.sparta.customerproductsystem.exception.BusinessException;
+import com.sparta.customerproductsystem.exception.ErrorCode;
 import com.sparta.customerproductsystem.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +33,7 @@ public class ProductService {
     public PostProductResponse postProduct(PostProductRequest postProductRequest){
 
         if(productRepository.existsByName(postProductRequest.getName())){
-            throw new IllegalStateException("중복된 상품입니다.");
+            throw BusinessException.of(ErrorCode.INVALID_PRODUCT_NAME);
         }
 
         Product product = Product.builder()
@@ -74,7 +76,7 @@ public class ProductService {
     public GetProductDetailResponse getProductDetail(Long id) {
 
         var product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("상품을 찾을 수 없습니다."));
+                .orElseThrow(() -> BusinessException.of(ErrorCode.INVALID_PRODUCT_ID));
         return GetProductDetailResponse.from(product, lowStockThreshold);
 
     }
@@ -84,7 +86,7 @@ public class ProductService {
     public PatchProductResponse patchProduct(Long id, PatchProductRequest patchProductRequest) {
 
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("해당 상품을 찾을 수 없습니다."));
+                .orElseThrow(() -> BusinessException.of(ErrorCode.INVALID_PRODUCT_ID));
 
         if (patchProductRequest.getName() != null) {
             product.setName(patchProductRequest.getName());
