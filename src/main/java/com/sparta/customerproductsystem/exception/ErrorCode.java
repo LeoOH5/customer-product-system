@@ -11,6 +11,7 @@ public enum ErrorCode {
     INVALID_TOKEN_FORMAT(HttpStatus.BAD_REQUEST, "accessToken 값이 올바르지 않습니다."),
     MISSING_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "refreshToken 필드가 누락되었습니다."),
           // - USER
+    INVALID_USER(HttpStatus.BAD_REQUEST, "유저가 존재하지 않습니다."),
     INVALID_KEYWORD(HttpStatus.BAD_REQUEST, "검색 키워드가 유효하지 않습니다."),
     INVALID_UPDATE_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 수정 요청입니다."),
           // - PRODUCT
