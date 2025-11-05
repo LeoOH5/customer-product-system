@@ -1,6 +1,7 @@
 package com.sparta.customerproductsystem.service;
 
 import com.sparta.customerproductsystem.domain.entity.Users;
+import com.sparta.customerproductsystem.domain.role.UserRole;
 import com.sparta.customerproductsystem.dto.*;
 import com.sparta.customerproductsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -49,15 +50,9 @@ public class UserService {
     // 유저 정보 수정 (일반유저)
     @Transactional
     public PatchUserUpdateResponse updateUser(Long id, PatchUserUpdateRequest request) {
-        Users user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Users user = userRepository.findByIdOrThrow(id);
 
-        if (request.getName() != null && !request.getName().isBlank()) {
-            user.setName(request.getName());
-        }
-        if (request.getEmail() != null && !request.getEmail().isBlank()) {
-            user.setEmail(request.getEmail());
-        }
+        applyBasicUpdates(user, request.getName(), request.getEmail());
 
         return PatchUserUpdateResponse.from(user);
     }
@@ -65,19 +60,33 @@ public class UserService {
     // 유저 정보 수정 (관리자)
     @Transactional
     public PatchUserUpdateByAdminResponse updateUserByAdmin (Long id, PatchUserUpdateByAdminRequest updateRequest) {
-        Users user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Users user = userRepository.findByIdOrThrow(id);
 
-        if (updateRequest.getName() != null && !updateRequest.getName().isBlank()) {
-            user.setName(updateRequest.getName());
-        }
-        if (updateRequest.getEmail() != null && !updateRequest.getEmail().isBlank()) {
-            user.setEmail(updateRequest.getEmail());
-        }
-        if (updateRequest.getRole() != null) {
-            user.setRole(updateRequest.getRole());
-        }
+        applyAdminUpdates(user, updateRequest.getName(), updateRequest.getEmail(), updateRequest.getRole());
 
         return PatchUserUpdateByAdminResponse.from(user);
+    }
+
+    // 일반 사용자 정보수정 로직
+    private void applyBasicUpdates(Users user, String name, String email) {
+        if (name != null && !name.isBlank()) {
+            user.setName(name);
+        }
+        if (email != null && !email.isBlank()) {
+            user.setEmail(email);
+        }
+    }
+
+    // 관리자 전용 확장 업데이트 로직
+    private void applyAdminUpdates(Users user, String name, String email, UserRole role) {
+        if (name != null && !name.isBlank()) {
+            user.setName(name);
+        }
+        if (email != null && !email.isBlank()) {
+            user.setEmail(email);
+        }
+        if (role != null) {
+            user.setRole(role);
+        }
     }
 }

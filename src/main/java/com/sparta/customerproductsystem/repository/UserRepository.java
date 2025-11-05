@@ -20,4 +20,11 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     Boolean existsByEmail(String email);
 
     Optional<Users> findByEmail(String email);
+
+    // 예외처리 패턴 캡슐화
+    default Users findByIdOrThrow(Long id) {
+        return findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found")
+        );
+    }
 }
