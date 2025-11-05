@@ -95,9 +95,6 @@ public class ProductService {
             product.setPrice(patchProductRequest.getPrice());
         }
         if (patchProductRequest.getStockQuantity() != null) {
-            if(patchProductRequest.getStockQuantity() < 0){
-                BusinessException.of(ErrorCode.INVALID_PRODUCT_UPDATE);
-            }
             product.setStockQuantity(patchProductRequest.getStockQuantity());
         }
 
