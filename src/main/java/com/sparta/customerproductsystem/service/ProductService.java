@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,8 +72,55 @@ public class ProductService {
     // Product 상세 조회
     @Transactional(readOnly = true)
     public GetProductDetailResponse getProductDetail(Long id) {
+
         var product = productRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("상품을 찾을 수 없습니다."));
         return GetProductDetailResponse.from(product, lowStockThreshold);
+
     }
+
+    // Product 수정
+    @Transactional
+    public PatchProductResponse patchProduct(Long id, PatchProductRequest patchProductRequest) {
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("해당 상품을 찾을 수 없습니다."));
+
+        if (patchProductRequest.getName() != null) {
+            product.setName(patchProductRequest.getName());
+        }
+        if (patchProductRequest.getPrice() != null) {
+            product.setPrice(patchProductRequest.getPrice());
+        }
+        if (patchProductRequest.getStockQuantity() != null) {
+            product.setStockQuantity(patchProductRequest.getStockQuantity());
+        }
+
+        String status = product.getStockQuantity() > 0 ? "AVAILABLE" : "OUT_OF_STOCK";
+
+        return PatchProductResponse.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .price(product.getPrice())
+                .stockQuantity(product.getStockQuantity())
+                .category(product.getCategory())
+                .status(status)
+                .updatedAt(LocalDateTime.now())
+                .message("상품 정보가 수정되었습니다.")
+                .warning(null)
+                .build();
+
+    }
+
+    // Product 검색
+    @Transactional(readOnly = true)
+    public List<GetProductSearchResponse> searchProducts(String keyword) {
+        List<Product> products = productRepository
+                .findByNameContainingIgnoreCaseOrCategoryContainingIgnoreCase(keyword, keyword);
+
+        return products.stream()
+                .map(GetProductSearchResponse::from)
+                .toList();
+    }
+
 }
