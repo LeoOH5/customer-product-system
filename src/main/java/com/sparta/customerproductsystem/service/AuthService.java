@@ -46,7 +46,7 @@ public class AuthService {
                 .orElseThrow(() -> BusinessException.of(ErrorCode.INVALID_EMAIL_FORMAT));
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), users.getPassword())) {
-            throw BusinessException.of(ErrorCode.IVALID_PASSWORD);
+            throw BusinessException.of(ErrorCode.INVALID_PASSWORD);
         }
 
         String userRole = users.getRole().toString();

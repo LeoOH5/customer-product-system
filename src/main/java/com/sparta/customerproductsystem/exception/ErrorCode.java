@@ -12,7 +12,7 @@ public enum ErrorCode {
     MISSING_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "refreshToken 필드가 누락되었습니다."),
           // - USER
     INVALID_USER(HttpStatus.BAD_REQUEST, "유저가 존재하지 않습니다."),
-    IVALID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 올바르지 않습니다."),
+    INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 올바르지 않습니다."),
     INVALID_KEYWORD(HttpStatus.BAD_REQUEST, "검색 키워드가 유효하지 않습니다."),
     INVALID_UPDATE_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 수정 요청입니다."),
           // - PRODUCT
@@ -23,7 +23,7 @@ public enum ErrorCode {
           // - ORDER
     INVALID_ORDER_STOCK(HttpStatus.BAD_REQUEST, "주문하시려는 상품의 재고가 부족합니다."),
           // - REVIEW
-    INVALID_PRODUCT_REQUEST(HttpStatus.BAD_REQUEST, "요청 데이터가 유효하지 않습니다."),
+    INVALID_PRODUCT_REVIEW_REQUEST(HttpStatus.BAD_REQUEST, "요청 데이터가 유효하지 않습니다."),
 
     //401,
     MISSING_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "Authorization 헤더에 Access Token이 없습니다."),
@@ -39,6 +39,7 @@ public enum ErrorCode {
     //404,
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "등록된 상품이 없습니다."),
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "등록된 리뷰가 없습니다."),
 
     //409,
     USER_DUPLICATED_EMAIL(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),

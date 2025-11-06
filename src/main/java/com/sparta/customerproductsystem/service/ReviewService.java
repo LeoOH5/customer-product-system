@@ -31,11 +31,11 @@ public class ReviewService {
     public PostReviewResponse createReview(UserPrincipal user, Long productId, PostReviewRequest req) {
         // 현재 로그인 사용자 조회
         Users users = userRepository.findById(user.getId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // 상품 조회
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
 
         if (reviewRepository.existsByUserAndProduct(users, product)) {
             throw new BusinessException(ErrorCode.REVIEW_DUPLICATED_REVIEW);
@@ -56,7 +56,7 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public List<GetReviewsResponse> getReviews(Long productId) {
         productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
 
         List<Review> reviews = reviewRepository.findByProductId(productId);
 
@@ -76,7 +76,7 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public GetOneReviewResponse getOneReview(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.REVIEW_NOT_FOUND));
 
         return GetOneReviewResponse.from(review);
     }
@@ -86,7 +86,7 @@ public class ReviewService {
     public PatchReviewResponse patchReview(
             UserPrincipal principal, Long productId, Long reviewId, PatchReviewRequest req) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다. id=" + reviewId));
+                .orElseThrow(() -> new BusinessException(ErrorCode.REVIEW_NOT_FOUND));
 
         // 작성자 본인 여부 검증
         boolean isOwner = review.getUser().getId().equals(principal.getId());
@@ -95,7 +95,7 @@ public class ReviewService {
         }
 
         if (!review.getProduct().getId().equals(productId)) {
-            throw new IllegalArgumentException("요청한 상품과 리뷰의 상품이 일치하지 않습니다.");
+            throw new BusinessException(ErrorCode.INVALID_PRODUCT_REVIEW_REQUEST);
         }
 
         review.setDescription(req.getDescription());
@@ -109,7 +109,7 @@ public class ReviewService {
     public DeleteReviewResponse DeleteReview(
             UserPrincipal principal, Long productId, Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다. id=" + reviewId));
+                .orElseThrow(() -> new BusinessException(ErrorCode.REVIEW_NOT_FOUND));
 
         // 작성자 본인 여부 검증
         boolean isOwner = review.getUser().getId().equals(principal.getId());
@@ -118,7 +118,7 @@ public class ReviewService {
         }
 
         if (!review.getProduct().getId().equals(productId)) {
-            throw new IllegalArgumentException("요청한 상품과 리뷰의 상품이 일치하지 않습니다.");
+            throw new BusinessException(ErrorCode.INVALID_PRODUCT_REVIEW_REQUEST);
         }
 
         // 삭제 수행
@@ -140,7 +140,7 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public GetReviewDetailByAdminResponse getReviewDetailByAdminResponse(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("Review not found."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.REVIEW_NOT_FOUND));
         return GetReviewDetailByAdminResponse.from(review);
     }
 
@@ -148,7 +148,7 @@ public class ReviewService {
     @Transactional
     public DeleteReviewByAdminResponse deleteReviewByAdmin(Long reviewId, String comment) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("리뷰가 존재하지 않습니다. id=" + reviewId));
+                .orElseThrow(() -> new BusinessException(ErrorCode.REVIEW_NOT_FOUND));
         reviewRepository.delete(review);
         return DeleteReviewByAdminResponse.from(review, "리뷰가 삭제되었습니다.", comment);
     }
