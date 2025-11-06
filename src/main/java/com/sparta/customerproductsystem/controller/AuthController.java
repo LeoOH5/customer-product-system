@@ -59,10 +59,11 @@ public class AuthController {
 
     }
 
-    //관리자권한 회원 추가
+    //관리자 권한 회원 추가
     @PostMapping("/admin/user")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CommonResponse<AdminCreateUserResponse>> adminUserSave(@Valid @RequestBody AdminCreateUserRequest adminCreateUserRequest) {
+    public ResponseEntity<CommonResponse<AdminCreateUserResponse>> adminUserSave(
+            @Valid @RequestBody AdminCreateUserRequest adminCreateUserRequest) {
 
         AdminCreateUserResponse result = authService.adminUserSave(adminCreateUserRequest);
 
