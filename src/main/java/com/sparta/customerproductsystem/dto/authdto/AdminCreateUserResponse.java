@@ -1,7 +1,6 @@
-package com.sparta.customerproductsystem.dto;
+package com.sparta.customerproductsystem.dto.authdto;
 
 import com.sparta.customerproductsystem.domain.entity.Users;
-import com.sparta.customerproductsystem.domain.role.UserRole;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

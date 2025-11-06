@@ -1,5 +1,7 @@
 package com.sparta.customerproductsystem.config;
 
+import com.sparta.customerproductsystem.exception.AccessDeniedHandlerImpl;
+import com.sparta.customerproductsystem.exception.AuthenticationEntryPointImpl;
 import com.sparta.customerproductsystem.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +36,12 @@ public class SecurityConfig {
                         .requestMatchers("/user/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users").permitAll()
                         .anyRequest().authenticated())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                // @PreAuthorize 해결을 위한 Spring Security 예외 처리기 커스터마이징
+                .exceptionHandling(ex -> ex
+                .authenticationEntryPoint(new AuthenticationEntryPointImpl()) // 401
+                .accessDeniedHandler(new AccessDeniedHandlerImpl())               // 403 (이미 구현된 클래스)
+        );
         return http.build();
     }
 

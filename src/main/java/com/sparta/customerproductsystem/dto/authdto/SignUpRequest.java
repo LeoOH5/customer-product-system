@@ -1,4 +1,4 @@
-package com.sparta.customerproductsystem.dto;
+package com.sparta.customerproductsystem.dto.authdto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -19,4 +19,6 @@ public class SignUpRequest {
     @NotBlank(message = "이름은 필수 입력값입니다.")
     @Size(max = 30, message = "이름은 최대 30자까지 입력 가능합니다.")
     private String name;
+
+    // 제약조건 미준수 시 403 Forbidden 가려지고 ErrorCode 응답 안됨 << 구현 필요여부 체크
 }

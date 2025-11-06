@@ -3,7 +3,7 @@ package com.sparta.customerproductsystem.service;
 import com.sparta.customerproductsystem.domain.entity.RefreshToken;
 import com.sparta.customerproductsystem.domain.entity.Users;
 import com.sparta.customerproductsystem.domain.role.UserRole;
-import com.sparta.customerproductsystem.dto.*;
+import com.sparta.customerproductsystem.dto.authdto.*;
 import com.sparta.customerproductsystem.exception.BusinessException;
 import com.sparta.customerproductsystem.exception.ErrorCode;
 import com.sparta.customerproductsystem.repository.RefreshTokenRepository;
@@ -46,7 +46,7 @@ public class AuthService {
                 .orElseThrow(() -> BusinessException.of(ErrorCode.INVALID_EMAIL_FORMAT));
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), users.getPassword())) {
-            throw BusinessException.of(ErrorCode.IVALID_PASSWORD);
+            throw BusinessException.of(ErrorCode.INVALID_PASSWORD);
         }
 
         String userRole = users.getRole().toString();

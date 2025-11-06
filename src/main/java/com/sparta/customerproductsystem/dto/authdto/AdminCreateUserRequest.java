@@ -1,4 +1,4 @@
-package com.sparta.customerproductsystem.dto;
+package com.sparta.customerproductsystem.dto.authdto;
 
 import com.sparta.customerproductsystem.domain.role.UserRole;
 import jakarta.validation.constraints.Email;

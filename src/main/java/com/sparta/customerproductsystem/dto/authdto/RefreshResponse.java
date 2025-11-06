@@ -1,4 +1,4 @@
-package com.sparta.customerproductsystem.dto;
+package com.sparta.customerproductsystem.dto.authdto;
 
 import lombok.Getter;
 

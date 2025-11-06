@@ -1,4 +1,4 @@
-package com.sparta.customerproductsystem.dto;
+package com.sparta.customerproductsystem.dto.userdto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;

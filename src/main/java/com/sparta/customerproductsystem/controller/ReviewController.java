@@ -100,7 +100,7 @@ public class ReviewController {
             @RequestBody(required = false) DeleteReviewByAdminRequest body
     ) {
         String comment = (body == null) ? null : body.getComment();
-        DeleteReviewByAdminResponse response = reviewService.deleteReviewByAdmin(reviewId, comment); // (B) 사용
+        DeleteReviewByAdminResponse response = reviewService.deleteReviewByAdmin(reviewId, comment);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

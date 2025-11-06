@@ -23,26 +23,32 @@
 
 ## 📁 디렉토리 구조
 ```
-customer-product-system
-├── src
-│   ├── main
-│   │   ├── java
-│   │   │   └── com.sparta.customerproductsystem
-│   │   │       ├── config               # Spring Security 등 환경설정
-│   │   │       ├── controller           # API 요청/응답 처리 (User, Product 등)
-│   │   │       ├── domain
-│   │   │       │   └── entity           # JPA 엔티티 클래스
-│   │   │       ├── dto                  # 요청/응답 DTO 클래스
-│   │   │       ├── utils                # JWT 토큰 생성, 검증, 파싱을 전담하는 유틸리티 클래스 
-│   │   │       ├── repository           # JPA Repository 인터페이스
-│   │   │       │── service              # 비즈니스 로직 처리 (UserService, ProductService 등)
-│   │   │       └── security             # JWT 인증 관련 클래스 (JwtFilter, UserPrincipal)
-│   │   └── resources
-│   │       ├── application.properties   # DB 및 Security 설정
-│   │       └── static / templates       # (필요 시) 정적 리소스 / 템플릿
-│   └── test
-│       └── java …                     # 단위 테스트
-│
+customer-product-system/
+├── assets/
+├── build/                       # (생성물; 보통 .gitignore)
+├── gradle/
+├── src/
+│    └── main/
+│        └── java/
+│            └── com/sparta/customerproductsystem/
+│               ├── config/                  # 보안/전역 설정 (SecurityConfig 등)
+│               ├── controller/              # REST 컨트롤러
+│               ├── domain/
+│               │   ├── entity/              # JPA 엔티티
+│               │   └── role/                # 권한/역할 관련 클래스
+│               ├── dto/
+│               │   ├── authdto/             # 인증/인가 DTO
+│               │   ├── orderdto/            # 주문 DTO
+│               │   ├── productdto/          # 상품 DTO
+│               │   ├── reviewdto/           # 리뷰 DTO
+│               │   ├── userdto/             # 사용자 DTO
+│               │   └── ErrorResponse.java   # 공통 에러 응답 DTO
+│               ├── exception/               # 예외/에러코드/보안 예외 핸들러
+│               ├── repository/              # Spring Data JPA 리포지토리
+│               ├── security/                # JWT/필터/유저 프린시펄 등
+│               ├── service/                 # 비즈니스 로직
+│               ├── utils/                   # 공통 유틸리티
+│               └── CustomerProductSystemApplication.java
 ├── build.gradle
 ├── settings.gradle
 ├── .gitignore
