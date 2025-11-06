@@ -1,7 +1,7 @@
 package com.sparta.customerproductsystem.domain.entity;
 
+import com.sparta.customerproductsystem.domain.role.OrderRole;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +15,13 @@ public class Order extends BaseTimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private int quantity;
+
+    private int amount;
+
+    @Enumerated(EnumType.STRING)
+    private OrderRole status;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private Users user;
@@ -23,10 +30,25 @@ public class Order extends BaseTimeEntity{
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    private int quantity;
+    public Order(Users user, Product product, int quantity, int amount, OrderRole status) {
+        this.user = user;
+        this.product = product;
+        this.quantity = quantity;
+        this.amount = amount;
+        this.status = status;
+    }
 
-    private int amount;
+    public void delete(OrderRole role) {
+        if(role.equals(OrderRole.OK)) {
+            this.quantity = 0;
+            this.amount = 0;
+            this.status = OrderRole.CANCEL;
+        }
+    }
 
-    private String status;
-
+    public void update(int quantity, int amount, Product product) {
+        this.quantity = quantity;
+        this.amount = amount;
+        this.product = product;
+    }
 }

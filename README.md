@@ -1,0 +1,142 @@
+# 🛒 이커머스 백오피스 프로젝트
+
+> 실제 백오피스 환경을 가정하고, 고객과 상품 정보를 등록·조회·수정·삭제(CRUD) 할 수 있는 기능을 직접 구현
+>
+> 관리자가 고객과 상품 데이터를 쉽고 정확하게 관리할 수 있는 기본 시스템을 구축하는 것
+
+---
+
+## 🧩 기술 스택
+
+| 구분 | 기술 |
+|------|------|
+| **Language** | Java 17 |
+| **Framework** | Spring Boot 3.x |
+| **ORM / DB** | Spring Data JPA, MySQL |
+| **Security** | Spring Security + JWT |
+| **Build Tool** | Gradle |
+| **IDE** | IntelliJ IDEA |
+| **API Test** | Postman |
+| **Version Control** | Git / GitHub |
+
+---
+
+## 📁 디렉토리 구조
+```
+customer-product-system/
+├── assets/
+├── build/                       # (생성물; 보통 .gitignore)
+├── gradle/
+├── src/
+│    └── main/
+│        └── java/
+│            └── com/sparta/customerproductsystem/
+│               ├── config/                  # 보안/전역 설정 (SecurityConfig 등)
+│               ├── controller/              # REST 컨트롤러
+│               ├── domain/
+│               │   ├── entity/              # JPA 엔티티
+│               │   └── role/                # 권한/역할 관련 클래스
+│               ├── dto/
+│               │   ├── authdto/             # 인증/인가 DTO
+│               │   ├── orderdto/            # 주문 DTO
+│               │   ├── productdto/          # 상품 DTO
+│               │   ├── reviewdto/           # 리뷰 DTO
+│               │   ├── userdto/             # 사용자 DTO
+│               │   └── ErrorResponse.java   # 공통 에러 응답 DTO
+│               ├── exception/               # 예외/에러코드/보안 예외 핸들러
+│               ├── repository/              # Spring Data JPA 리포지토리
+│               ├── security/                # JWT/필터/유저 프린시펄 등
+│               ├── service/                 # 비즈니스 로직
+│               ├── utils/                   # 공통 유틸리티
+│               └── CustomerProductSystemApplication.java
+├── build.gradle
+├── settings.gradle
+├── .gitignore
+└── README.md
+```
+---
+
+## ⚙️ 환경설정
+
+### 1️⃣ 전제조건
+- JDK 17 이상
+- MySQL (로컬 혹은 Docker)
+- Gradle 8.x 이상
+
+### 2️⃣ 환경 변수 (.env)
+> `.env` 파일은 Git에 커밋되지 않으며, 각자 로컬에서 직접 설정해야 합니다.
+- JWT_SECRET_KEY
+- DB_PASSWORD
+- LOWSTOCK_THRESHOLD
+- ACCESS_TOKEN_EXPIRATION 
+- REFRESH_TOKEN_EXPIRATION
+
+> **참고:** `.gitignore`에 `.env`가 포함되어 있어 커밋되지 않습니다.
+
+---
+
+## 🚀 실행방법
+
+```
+# 1. git clone
+git clone https://github.com/LeoOH5/customer-product-system.git
+
+# 2. 환경 변수 설정
+.env 예시 파일 생성 후 application.properties 내 변수에 맞춰 설정 필요
+
+# 3. 실행
+```
+
+## 🔐 인증 절차
+
+1. 사용자는 /user/auth/login으로 AccessToken 발급
+2. JWT 토큰은 Authorization: Bearer 형식으로 전송
+3.	JwtAuthenticationFilter 가 토큰을 검증하고
+→ SecurityContext 에 Authentication 등록
+
+---
+## 🧩 주요 기능
+
+### 회원 관리
+- 회원 등록, 로그인, 조회, 수정 기능 제공
+- 본인 정보 수정은 본인만 가능 (`@PreAuthorize` 기반 접근 제어)
+- 관리자(Admin)는 전체 사용자 정보 조회 및 권한(Role) 변경 가능
+
+### 상품 관리
+- 상품 등록, 수정, 삭제, 조회 기능
+- 상품 상태(Status), 재고(Stock) 및 카테고리(Category) 관리
+
+### 주문 관리
+- 주문 등록, 조회, 수정, 삭제 기능
+- 주문 등록, 삭제 시 상품의 재고(Stock) 변경
+
+
+### 인증 및 인가
+- JWT 기반 로그인 및 인증 처리
+- Spring Security를 통한 Role 기반 접근 제어 (`CUSTOMER`, `ADMIN`)
+- 토큰 내 Role 정보를 SecurityContext에 반영하여 `@PreAuthorize` 동작 보장
+
+### 시스템 관리
+- `.env` 환경 변수 파일 기반 설정 (DB, JWT Secret 등)
+- `.gitignore`로 민감 정보 비공개 유지
+
+### 공통 응답 포맷 
+- Common Response를 이용한 성공/실패 메세지 통일화
+
+---
+## 🧱 ERD 다이어그램
+- [ERD 클라우드 링크](https://www.erdcloud.com/d/warAmjHserrP7bJ9u)
+- 주요 엔티티: `User`, `Product`, `Order`, `Review`
+- 관계:
+  ```
+  Users (1) ─── (N) Orders (N) ─── (1) Products
+  │                         │
+  └─────────── (N) Reviews (N) ─── (1)
+  ```
+
+![ERD Diagram](./assets/erd.png)
+
+## 🔗 API 명세서
+
+- [API 명세서 노션 링크](https://www.notion.so/teamsparta/29d2dc3ef514805e8401f3c0c01e4eff?v=29d2dc3ef514818fb416000c65879c5b&source=copy_link)
+![ERD Diagram](./assets/api1.png)

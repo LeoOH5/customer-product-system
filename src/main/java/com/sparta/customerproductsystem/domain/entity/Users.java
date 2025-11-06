@@ -2,9 +2,13 @@ package com.sparta.customerproductsystem.domain.entity;
 
 import com.sparta.customerproductsystem.domain.role.UserRole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,27 +21,42 @@ public class Users extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
+    @Email
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Size(min = 8, message = "비밀번호는 최소 8자 이상, 영문,숫자,특수문자 조합을 권장합니다.")
     @Column(nullable = false)
     private String password;
+
+    @Setter
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    private String phone;
 
-    private UserRole role;
+    @Setter
+    @Enumerated(EnumType.STRING)
+    private UserRole role = UserRole.CUSTOMER;
 
-    @OneToMany(mappedBy = "user")
-    private List<Review> reviews;
+    // orphanRemoval 고아 삭제
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>(); // NPE 방지
 
-    public Users(String email, String password, String name, String phone) {
+    void addReview(Review review) {
+        if (review == null) return;
+        this.reviews.add(review);
+    }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RefreshToken> refreshTokens = new ArrayList<>();
+
+
+    public Users(String email, String password, String name, UserRole role) {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.phone = phone;
+        this.role = role;
     }
-
 }
 
 
