@@ -36,10 +36,11 @@ public class Product extends BaseTimeEntity{
 
     private String imageUrl;
 
+    private Long totalSales;
+
     // 양방향
     @OneToMany(mappedBy = "product", orphanRemoval = true)
     private final List<Review> reviews = new ArrayList<>(); // NPE 방지
-    private Long totalSales;
 
     public void setName(String name) {
         this.name = name;
@@ -79,6 +80,11 @@ public class Product extends BaseTimeEntity{
     public void setTotalSales(int stockQuantity, int sales) {
 
         this.stockQuantity = stockQuantity - sales;
+
+        if(totalSales == null) {
+            this.totalSales = 0L;
+        }
+
         this.totalSales += sales;
     }
 }
